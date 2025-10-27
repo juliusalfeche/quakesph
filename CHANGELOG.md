@@ -5,6 +5,39 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.1.0] - 2025-10-28
+### 🚀 Update — *“QuakesPH v1.1”*
+
+This update introduces **user geolocation**, improved **quake magnitude visualization**, and minor UI enhancements.
+
+---
+
+### 📍 User Geolocation & Nearest Quake
+- Added **user location marker** with pulsing animation on the map.
+- Computes and displays the **nearest quake to the user** dynamically.
+- Distance and magnitude are now shown in the status area.
+
+### 🎨 Enhanced Magnitude Visualization
+- Magnitude values in table and nearest quake display now **color-coded** according to magnitude.
+- Updated marker colors and table cell styling to better indicate quake severity.
+
+### 🗺️ Map Improvements
+- User location integrates smoothly with map navigation.
+- Map fly-to animation now focuses on latest quake.
+- Marker blinking animation retained for most recent quake.
+
+### ⚙️ Performance & Optimization
+- Refined earthquake data loading with **AbortController** to cancel outdated requests.
+- Legend dynamically updates based on current magnitude filter and color scheme.
+- Improved dark/light mode handling to sync marker colors and base maps.
+
+### 🧩 Miscellaneous
+- Minor UI tweaks to ensure responsive layout and better visibility for user marker.
+
+> *“Stay aware of your surroundings — now with personalized quake info!”*
+
+---
+
 ## [1.0.0] - 2025-10-27
 ### 🎉 Initial Release — *“QuakesPH v1.0”*
 

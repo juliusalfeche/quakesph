@@ -274,6 +274,67 @@ document.addEventListener('DOMContentLoaded', () => {
     updateLegendColors();
     loadEarthquakes(); // reload to refresh marker + table colors
   });
+  
+  
+  // --- User Geolocation & Nearest Quake ---
+  const userMarker = L.marker([0, 0], {
+    icon: L.divIcon({
+      className: 'user-location-marker',
+      html: '<div style="width:16px;height:16px;border-radius:50%;background:#007bff;border:2px solid white;box-shadow:0 0 6px #007bff;"></div>'
+    })
+  });
+
+  const toRad = deg => (deg * Math.PI) / 180;
+  const getDistanceKm = (lat1, lon1, lat2, lon2) => {
+    const R = 6371;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) ** 2 +
+              Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+              Math.sin(dLon / 2) ** 2;
+    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+  };
+
+  const showNearestQuake = (userLatLng) => {
+    if (!quakeData.length) return;
+
+    // Find closest quake
+    const nearest = quakeData.reduce((closest, q) => {
+      const dist = getDistanceKm(userLatLng.lat, userLatLng.lng, q.latlng[0], q.latlng[1]);
+      return !closest || dist < closest.dist ? { quake: q, dist } : closest;
+    }, null);
+
+    if (nearest) {
+      const { quake, dist } = nearest;
+	  const magColor = getMagColor(quake.mag);
+      const msg = `<i>(Magnitude <span style="color:${magColor};font-weight:600;">${quake.mag.toFixed(1)}</span>, ${dist.toFixed(1)} km away)</i>`
+      document.getElementById('em-refresh-status').innerHTML = msg;
+    }
+  };
+
+  const locateUser = () => {
+    if (!navigator.geolocation) {
+      console.warn('Geolocation not supported');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(pos => {
+      const { latitude, longitude } = pos.coords;
+      const userLatLng = { lat: latitude, lng: longitude };
+      userMarker.setLatLng(userLatLng).addTo(map);
+      map.flyTo(userLatLng, 6);
+      showNearestQuake(userLatLng);
+
+      // Recalculate nearest quake whenever new data loads
+      const observer = new MutationObserver(() => showNearestQuake(userLatLng));
+      observer.observe(document.getElementById('em-quake-count'), { childList: true });
+    }, err => {
+      console.warn('User denied geolocation or error:', err.message);
+    });
+  };
+
+  locateUser();
+
 
   // Footer + initial load
   document.getElementById('current-year').textContent = new Date().getFullYear();

@@ -135,6 +135,15 @@ body::before {
 .blinking-marker { animation: blink 1s infinite; }
 @keyframes blink { 0%,100%{opacity:1;}50%{opacity:0;} }
 
+.user-location-marker div {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
 /* LEGEND */
 #em-legend {
   display: flex;
