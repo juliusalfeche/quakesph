@@ -51,8 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('keydown', e => {
     if ((e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'i') ||
-      (e.ctrlKey && e.key.toLowerCase() === 'u') ||
-      e.key === 'F12') e.preventDefault();
+        (e.ctrlKey && e.key.toLowerCase() === 'u') ||
+        e.key === 'F12') e.preventDefault();
   });
 
   if (typeof L === 'undefined') {
@@ -178,37 +178,22 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (timeFilter === 'week') start.setDate(start.getDate() - 7);
     else start.setMonth(start.getMonth() - 1);
 
-    // --- API Request URL ---
-    const whereClause = `mag >= ${minMag} AND mag <= ${maxMag}`;
-
-    // FIX APPLIED: Simplified geometry format (xmin,ymin,xmax,ymax) for reliability.
-    const url = `https://gisweb.phivolcs.dost.gov.ph/arcgis/rest/services/PHIVOLCS_EWS/Earthquake/MapServer/0/query?f=geojson&where=${encodeURIComponent(whereClause)}&time=${start.getTime()},${end.getTime()}&geometryType=esriGeometryEnvelope&geometry=116,4,135,21&inSR=4326&outFields=*&outSR=4326`;
-    // --- END API Request URL ---
+    const url = `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=${start.toISOString()}&endtime=${end.toISOString()}&minlatitude=4&maxlatitude=21&minlongitude=116&maxlongitude=135&minmagnitude=0`;
 
     document.getElementById('em-quake-count').innerHTML = '<i>Fetching earthquake data…</i>';
-    document.getElementById('em-refresh-status').textContent = '';
 
     try {
       const response = await fetch(url, { signal: controller.signal, cache: 'no-cache' });
-
-      // Robust check for HTTP errors (e.g., 404, 500)
-      if (!response.ok) {
-          throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
-      }
-
       const data = await response.json();
       quakeLayer.clearLayers();
 
-      // Ensure data.features is a valid array
-      const features = Array.isArray(data.features) ? data.features : [];
-
-      quakeData = features.map(f => {
+      quakeData = (data.features || []).filter(f => {
+        const [lon, lat] = f.geometry.coordinates;
+        return f.properties.mag >= minMag && f.properties.mag <= maxMag && PH_BOUNDS.contains([lat, lon]);
+      }).map(f => {
         const p = f.properties;
-        const [lon, lat] = f.geometry.coordinates; // Coordinates are [lon, lat]
-        const depth = p.depth; // Depth is in properties
+        const [lon, lat, depth] = f.geometry.coordinates;
         const latlng = [lat, lon];
-        const eventUrl = '#'; // Placeholder URL
-
         const marker = L.circleMarker(latlng, {
           radius: 2 + p.mag,
           stroke: true,
@@ -218,22 +203,12 @@ document.addEventListener('DOMContentLoaded', () => {
           fillOpacity: 0.6,
           opacity: 0
         }).bindPopup(`
-          <a href="${eventUrl}" target="_blank" rel="noopener"><b>${p.location}</b></a><br>
+          <a href="${p.url}" target="_blank" rel="noopener"><b>${p.place}</b></a><br>
           <b>Magnitude:</b> ${p.mag}<br>
           <b>Depth:</b> ${depth.toFixed(1)} km<br>
-          <b>Time:</b> ${formatQuakeTime(p.datetime)}
+          <b>Time:</b> ${formatQuakeTime(p.time)}
         `).addTo(quakeLayer);
-
-        return {
-          id: f.id,
-          time: p.datetime, // epoch time
-          mag: p.mag,
-          place: p.location,
-          depth,
-          url: eventUrl,
-          latlng,
-          marker
-        };
+        return { id: f.id, time: p.time, mag: p.mag, place: p.place, depth, url: p.url, latlng, marker };
       });
 
       quakeData.sort((a, b) => b.time - a.time);
@@ -256,11 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('em-quake-count').textContent = `${quakeData.length} quake${quakeData.length !== 1 ? 's' : ''} found`;
       document.getElementById('em-refresh-status').textContent = '';
     } catch (err) {
-      if (err.name !== 'AbortError') {
-        console.error('Data Loading Error:', err);
-        // Display a friendlier error message while also suggesting a root cause
-        document.getElementById('em-refresh-status').textContent = 'Failed to load data (Network/API issue).';
-      }
+      if (err.name !== 'AbortError') document.getElementById('em-refresh-status').textContent = 'Failed to load data';
     }
   };
 
@@ -280,8 +251,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('em-basemap').addEventListener('change', e => {
     map.removeLayer(currentBase);
     currentBase = e.target.value === 'google_hybrid' ? baseLayers.google_hybrid :
-      e.target.value === 'osm' ? baseLayers.osm :
-      (isDark ? baseLayers.carto_dark : baseLayers.carto_light);
+                  e.target.value === 'osm' ? baseLayers.osm :
+                  (isDark ? baseLayers.carto_dark : baseLayers.carto_light);
     map.addLayer(currentBase);
   });
 
@@ -303,8 +274,8 @@ document.addEventListener('DOMContentLoaded', () => {
     updateLegendColors();
     loadEarthquakes(); // reload to refresh marker + table colors
   });
-
-
+  
+  
   // --- User Geolocation & Nearest Quake ---
   const userMarker = L.marker([0, 0], {
     icon: L.divIcon({
@@ -319,8 +290,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const dLat = toRad(lat2 - lat1);
     const dLon = toRad(lon2 - lon1);
     const a = Math.sin(dLat / 2) ** 2 +
-      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) ** 2;
+              Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+              Math.sin(dLon / 2) ** 2;
     return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
   };
 
@@ -335,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (nearest) {
       const { quake, dist } = nearest;
-      const magColor = getMagColor(quake.mag);
+	  const magColor = getMagColor(quake.mag);
       const msg = `<i>(Magnitude <span style="color:${magColor};font-weight:600;">${quake.mag.toFixed(1)}</span>, ${dist.toFixed(1)} km away)</i>`
       document.getElementById('em-refresh-status').innerHTML = msg;
     }
