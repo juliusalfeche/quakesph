@@ -2,7 +2,7 @@
   "id": "/quakesph/",
   "name": "QuakesPH",
   "short_name": "QuakesPH",
-  "description": "QuakesPH brings real-time earthquake updates straight to your screen, helping you track seismic activity across the Philippines with an interactive map and detailed earthquake information powered by USGS.",
+  "description": "QuakesPH is a progressive web application (PWA) that provides real-time earthquake tracking across the Philippines, powered by live data from the USGS Earthquake API.",
   "start_url": "/quakesph/",
   "scope": "/quakesph/",
   "display": "standalone",
