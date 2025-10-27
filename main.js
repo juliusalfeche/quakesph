@@ -322,7 +322,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const { latitude, longitude } = pos.coords;
       const userLatLng = { lat: latitude, lng: longitude };
       userMarker.setLatLng(userLatLng).addTo(map);
-      map.flyTo(userLatLng, 6);
       showNearestQuake(userLatLng);
 
       // Recalculate nearest quake whenever new data loads
