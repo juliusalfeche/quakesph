@@ -45,3 +45,15 @@ It features an **interactive map**, **dynamic filtering**, **offline capabilitie
 - Uses `AbortController` to prevent duplicate fetches.  
 - Auto-refresh every 60 seconds with smooth transitions.  
 - Lightweight and fast — optimized for mobile and low network conditions.
+
+---
+
+## ⚠️ Disclaimer
+
+The information provided by **QuakesPH** is for **educational and informational purposes only**. While we strive to provide accurate and up-to-date earthquake data, we **do not guarantee the completeness, reliability, or timeliness** of the information.  
+
+**QuakesPH only displays earthquakes of magnitude 4.0 and above**. It is **not a substitute for official warnings or advice** from local authorities, emergency services, or the **Philippine Institute of Volcanology and Seismology (PHIVOLCS)**. Users should **always follow official guidance and take necessary precautions** in the event of seismic activity.  
+
+By using this service, you acknowledge that **QuakesPH is not responsible for any loss, injury, or damage** resulting from the use or reliance on the information provided.
+
+---
