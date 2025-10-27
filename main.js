@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (timeFilter === 'week') start.setDate(start.getDate() - 7);
     else start.setMonth(start.getMonth() - 1);
 
-    const url = `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=${start.toISOString()}&endtime=${end.toISOString()}&minlatitude=4&maxlatitude=21&minlongitude=116&maxlongitude=135`;
+    const url = `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=${start.toISOString()}&endtime=${end.toISOString()}&minlatitude=4&maxlatitude=21&minlongitude=116&maxlongitude=135&minmagnitude=0`;
 
     document.getElementById('em-quake-count').innerHTML = '<i>Fetching earthquake data…</i>';
 
