@@ -1,38 +1,37 @@
 # 🪵 Changelog
 
-All notable changes to this project will be documented in this file.  
+All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
 ## [1.1.0] - 2025-10-28
-### 🚀 Update — *“QuakesPH v1.1”*
+### 🚀 Update — *“QuakesPH v1.1: Geolocation & Performance”*
 
-This update introduces **user geolocation**, improved **quake magnitude visualization**, and minor UI enhancements.
+This update introduces **user geolocation**, the ability to calculate the distance to the nearest quake, and key architectural performance enhancements.
 
 ---
 
 ### 📍 User Geolocation & Nearest Quake
 - Added **user location marker** with pulsing animation on the map.
-- Computes and displays the **nearest quake to the user** dynamically.
-- Distance and magnitude are now shown in the status area.
+- Computes and displays the **distance and magnitude** of the latest quake to the user dynamically.
+- Implemented an **animated dashed line** connecting the user to the latest quake on the map.
 
-### 🎨 Enhanced Magnitude Visualization
-- Magnitude values in table and nearest quake display now **color-coded** according to magnitude.
-- Updated marker colors and table cell styling to better indicate quake severity.
+### 🎨 Enhanced Visualization & UI
+- Magnitude values in table and nearest quake display are now **color-coded** according to severity.
+- Table magnitude values are formatted to **one decimal place** (`toFixed(1)`).
+- Markers are now **smoothly faded in** after the map fly-to animation completes.
 
 ### 🗺️ Map Improvements
 - User location integrates smoothly with map navigation.
-- Map fly-to animation now focuses on latest quake.
+- Map **fly-to animation** focuses on the latest quake.
 - Marker blinking animation retained for most recent quake.
+- Centered the **user location marker icon** correctly on its coordinates.
 
 ### ⚙️ Performance & Optimization
-- Refined earthquake data loading with **AbortController** to cancel outdated requests.
-- Legend dynamically updates based on current magnitude filter and color scheme.
-- Improved dark/light mode handling to sync marker colors and base maps.
-
-### 🧩 Miscellaneous
-- Minor UI tweaks to ensure responsive layout and better visibility for user marker.
+- Refined earthquake data loading with **`AbortController`** to cancel outdated requests, improving filter responsiveness.
+- Improved dark/light mode handling to sync marker and legend colors dynamically.
+- Added **`aria-live`** attributes for improved screen reader accessibility of dynamic status updates.
 
 > *“Stay aware of your surroundings — now with personalized quake info!”*
 
@@ -57,8 +56,8 @@ This is the first public release of **QuakesPH**, a Progressive Web App (PWA) fo
 
 ### 🧩 Filters & Controls
 - Filter earthquakes by:
-  - **Magnitude:** All, 4+, 5+, 6+, 7+  
-  - **Time Period:** Last Hour, Day, Week, Month  
+  - **Magnitude:** All, 4+, 5+, 6+, 7+
+  - **Time Period:** Last Hour, Day, Week, Month
 - Change basemap view (CARTO Light/Dark, Google Hybrid, OSM).
 
 ### 🌗 Dark / Light Mode
