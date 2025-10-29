@@ -1,26 +1,25 @@
 {
-  "id": "/quakesph/",
-  "name": "QuakesPH",
-  "short_name": "QuakesPH",
-  "description": "QuakesPH is a progressive web application (PWA) that provides real-time earthquake tracking across the Philippines, powered by live data from the USGS Earthquake API.",
-  "start_url": "/quakesph/",
-  "scope": "/quakesph/",
-  "display": "standalone",
-  "orientation": "portrait-primary",
-  "background_color": "#2c3e50",
-  "theme_color": "#2c3e50",
-  "icons": [
-    {
-      "src": "192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
+    "name": "QuakesPH",
+    "short_name": "QuakesPH",
+    "description": "QuakesPH is a progressive web application (PWA) that provides real-time earthquake tracking across the Philippines, powered by live data from the USGS Earthquake API.",
+    "start_url": ".",
+    "scope": ".",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "background_color": "#2c3e50",
+    "theme_color": "#2c3e50",
+    "icons": [
+        {
+            "src": "192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
 }

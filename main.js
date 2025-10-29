@@ -10,8 +10,9 @@ let lastController = null;
 let userLocationAttempted = false;
 let lineToLatestQuake = null;
 
+// --- Service Worker Logic (PWA) ---
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register(`/quakesph/sw.js?version=${Date.now()}`).then(reg => {
+    navigator.serviceWorker.register('/quakesph/sw.js?version=' + Date.now()).then(reg => {
         if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
         reg.addEventListener('updatefound', () => {
             const newWorker = reg.installing;
@@ -22,6 +23,19 @@ if ('serviceWorker' in navigator) {
         });
     });
 }
+
+// --- Utility Functions ---
+const toRad = deg => (deg * Math.PI) / 180;
+
+const getDistanceKm = (lat1, lon1, lat2, lon2) => {
+    const R = 6371;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) ** 2;
+    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+};
 
 const formatQuakeTime = ts => {
     const d = new Date(ts);
@@ -45,19 +59,9 @@ const fadeMarker = (marker, show = true, duration = 400) => {
 const fadeInMarkers = (markers, delay = 100) =>
     markers.forEach((m, i) => setTimeout(() => fadeMarker(m, true), i * delay));
 
-const toRad = deg => (deg * Math.PI) / 180;
-
-const getDistanceKm = (lat1, lon1, lat2, lon2) => {
-    const R = 6371;
-    const dLat = toRad(lat2 - lat1);
-    const dLon = toRad(lon2 - lon1);
-    const a = Math.sin(dLat / 2) ** 2 +
-        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-        Math.sin(dLon / 2) ** 2;
-    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
-};
 
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Initial DOM & Security Setup ---
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('keydown', e => {
         if ((e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'i') ||
@@ -72,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const PH_BOUNDS = L.latLngBounds(PH_BOUNDS_ARRAY);
 
-    // --- Map Configuration & Initialization ---
+    // --- Configuration ---
     const baseLayers = {
         osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
         google_hybrid: L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}'),
@@ -90,26 +94,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const getMagColor = mag =>
         magConfig.find(c => mag >= c.min && mag <= c.max)?.color || '#999';
 
-    const updateLegendColors = () => {
-        const legendItems = document.querySelectorAll('.em-legend-item');
-        legendItems.forEach(item => {
-            const min = parseFloat(item.dataset.min);
-            const max = parseFloat(item.dataset.max);
-            const match = magConfig.find(c => c.min === min && c.max === max);
-            if (match) {
-                item.querySelector('.em-legend-color').style.background = match.color;
-            }
-        });
-    };
-
+    // --- Map Initialization ---
     currentBase = isDark ? baseLayers.carto_dark : baseLayers.carto_light;
     const map = L.map('em-map', { layers: [currentBase], attributionControl: false }).fitBounds(PH_BOUNDS);
     const quakeLayer = L.layerGroup().addTo(map);
+    const statusEl = document.getElementById('nearest-status');
 
     // PH Bounds Rectangle
     const phBoundsRect = L.rectangle(PH_BOUNDS, { color: 'gray', weight: 1, dashArray: '5,5', fillOpacity: 0.1 });
     let phBoundsLayer = null;
-
     const showPHBounds = () => { if (!phBoundsLayer) phBoundsLayer = phBoundsRect.addTo(map); };
     const hidePHBounds = () => { if (phBoundsLayer) { map.removeLayer(phBoundsLayer); phBoundsLayer = null; } };
 
@@ -123,11 +116,13 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (!plateData) {
             fetch(plateBoundariesURL)
                 .then(r => r.json())
-                .then(data => { plateData = data; if (map.getZoom() >= MIN_ZOOM_FOR_PLATES && !plateBoundaries) showPlateBoundaries(); })
+                .then(data => {
+                    plateData = data;
+                    if (map.getZoom() >= MIN_ZOOM_FOR_PLATES && !plateBoundaries) showPlateBoundaries();
+                })
                 .catch(console.error);
         }
     };
-
     const hidePlateBoundaries = () => { if (plateBoundaries) { map.removeLayer(plateBoundaries); plateBoundaries = null; } };
 
     map.on('zoomend', () => {
@@ -135,7 +130,25 @@ document.addEventListener('DOMContentLoaded', () => {
         else { hidePlateBoundaries(); hidePHBounds(); }
     });
 
-    // --- Data Rendering ---
+    // --- Rendering & UI Helpers ---
+    const updateLegendColors = () => {
+        document.querySelectorAll('.em-legend-item').forEach(item => {
+            const min = parseFloat(item.dataset.min);
+            const max = parseFloat(item.dataset.max);
+            const match = magConfig.find(c => c.min === min && c.max === max);
+            if (match) {
+                item.querySelector('.em-legend-color').style.background = match.color;
+            }
+        });
+    };
+
+    const updateLegend = () => {
+        document.querySelectorAll('.em-legend-item').forEach(i => {
+            const min = +i.dataset.min, max = +i.dataset.max;
+            i.classList.toggle('active', quakeData.some(q => q.mag >= min && q.mag <= max));
+        });
+    };
+
     const renderTable = () => {
         const tbody = document.querySelector('#em-table tbody');
         tbody.innerHTML = '';
@@ -156,17 +169,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 marker.bringToFront();
                 fadeMarker(marker, true);
                 map.flyTo(eq.latlng, Math.max(map.getZoom(), 6.5), { animate: true, duration: 2 });
-                map.once('moveend', () => { marker.openPopup(); activeMarker = marker; setTimeout(() => fadeInMarkers(others, 50), 3000); });
+                map.once('moveend', () => {
+                    marker.openPopup();
+                    activeMarker = marker;
+                    setTimeout(() => fadeInMarkers(others, 50), 3000);
+                });
                 document.getElementById('em-header').scrollIntoView({ behavior: 'smooth' });
             };
             tbody.appendChild(tr);
-        });
-    };
-
-    const updateLegend = () => {
-        document.querySelectorAll('.em-legend-item').forEach(i => {
-            const min = +i.dataset.min, max = +i.dataset.max;
-            i.classList.toggle('active', quakeData.some(q => q.mag >= min && q.mag <= max));
         });
     };
 
@@ -177,8 +187,6 @@ document.addEventListener('DOMContentLoaded', () => {
             html: '<div style="width:16px;height:16px;border-radius:50%;background:#007bff;border:2px solid white;box-shadow:0 0 6px #007bff;"></div>'
         })
     });
-    
-    const statusEl = document.getElementById('nearest-status');
 
     const findNearestQuakeAndInjectDistance = (userLatLng) => {
         if (!quakeData.length) {
@@ -186,28 +194,28 @@ document.addEventListener('DOMContentLoaded', () => {
             if (lineToLatestQuake) { map.removeLayer(lineToLatestQuake); lineToLatestQuake = null; }
             return;
         }
-    
+
         const latestQuake = quakeData[0];
         const distanceKm = getDistanceKm(userLatLng.lat, userLatLng.lng, latestQuake.latlng[0], latestQuake.latlng[1]).toFixed(0);
         const magColor = getMagColor(latestQuake.mag);
         const formattedMag = latestQuake.mag.toFixed(1);
-    
+
         statusEl.innerHTML = `Latest <i><span style="color:${magColor};font-weight:600;">Magnitude ${formattedMag}</span> ⟷ <span class="blinking-text" style="color:#007bff;font-weight:600;">${distanceKm} km</span></i> Away`;
-    
+
         if (lineToLatestQuake) map.removeLayer(lineToLatestQuake);
-    
+
         lineToLatestQuake = L.polyline([userLatLng, latestQuake.latlng], {
             color: 'gray',
-            weight: 2, 
-            dashArray: '5, 5'  
+            weight: 2,
+            dashArray: '5, 5'
         }).addTo(map);
-    
+
         lineToLatestQuake.getElement()?.classList.add('animated-path');
     };
 
     const locateUser = () => {
         if (userLocationAttempted) return;
-        userLocationAttempted = true; 
+        userLocationAttempted = true;
 
         if (!navigator.geolocation) {
             statusEl.textContent = 'Geolocation not supported.';
@@ -217,14 +225,11 @@ document.addEventListener('DOMContentLoaded', () => {
         statusEl.innerHTML = '';
 
         navigator.geolocation.getCurrentPosition(pos => {
-            const { latitude, longitude } = pos.coords;
-            const userLatLng = { lat: latitude, lng: longitude };
+            const userLatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
             userMarker.setLatLng(userLatLng).addTo(map);
-            
             findNearestQuakeAndInjectDistance(userLatLng);
-            
         }, err => {
-            statusEl.innerHTML = '<i>To see how far away the quake is, allow location access in your browser settings.</i>';
+            statusEl.innerHTML = '<i>To see the quake distance, allow location access in settings.</i>';
             console.warn('User denied geolocation or error:', err.message);
         });
     };
@@ -286,13 +291,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
             quakeData.sort((a, b) => b.time - a.time);
 
-            quakeData.forEach(q => { const el = q.marker.getElement?.(); if (el) { el.classList.remove('blinking-marker'); el.style.opacity = 0; } });
+            quakeData.forEach(q => {
+                const el = q.marker.getElement?.();
+                if (el) {
+                    el.classList.remove('blinking-marker');
+                    el.style.opacity = 0;
+                }
+            });
 
             if (quakeData.length) {
                 const latestMarker = quakeData[0].marker;
                 map.flyTo(latestMarker.getLatLng(), Math.max(map.getZoom(), 6.5), { animate: true, duration: 2 });
                 map.once('moveend', () => {
-                    quakeData.forEach(q => { const el = q.marker.getElement?.(); if (el) { el.style.transition = 'opacity 400ms ease-in-out'; el.style.opacity = 0.8; } });
+                    quakeData.forEach(q => {
+                        const el = q.marker.getElement?.();
+                        if (el) {
+                            el.style.transition = 'opacity 400ms ease-in-out';
+                            el.style.opacity = 0.8;
+                        }
+                    });
                     latestMarker.openPopup();
                     activeMarker = latestMarker;
                     latestMarker.getElement?.().classList.add('blinking-marker');
@@ -310,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderTable();
             updateLegend();
             updateLegendColors();
-            
+
             const quakeCountEl = document.getElementById('em-quake-count');
             const timePeriodMap = {
                 'hour': 'Last Hour',
@@ -320,19 +337,17 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             const timeSuffix = timePeriodMap[timeFilter] ? ` ${timePeriodMap[timeFilter]}` : '';
 
-            if (quakeData.length === 0) {
-                quakeCountEl.textContent = 'No Quakes Found' + timeSuffix;
-            } else {
-                quakeCountEl.textContent = `${quakeData.length} Quake${quakeData.length !== 1 ? 's' : ''} Found` + timeSuffix;
-            }
-            
+            quakeCountEl.textContent = quakeData.length === 0 ?
+                'No Quakes Found' + timeSuffix :
+                `${quakeData.length} Quake${quakeData.length !== 1 ? 's' : ''} Found` + timeSuffix;
+
             document.getElementById('em-refresh-status').textContent = '';
         } catch (err) {
             if (err.name !== 'AbortError') document.getElementById('em-refresh-status').textContent = 'Failed to load data';
         }
     };
 
-    // --- Event Listeners ---
+    // --- Event Listeners & Theme Change ---
     document.querySelectorAll('.em-legend-item').forEach(item => {
         item.addEventListener('click', () => {
             const filter = document.getElementById('em-mag-filter');
@@ -372,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Initial Setup ---
     document.getElementById('current-year').textContent = new Date().getFullYear();
     updateLegendColors();
-    
+
     loadEarthquakes();
     setInterval(loadEarthquakes, REFRESH_INTERVAL);
 });

@@ -1,17 +1,18 @@
 const CACHE_NAME = "quakesph-v6";
 const STATIC_ASSETS = [
-    "/quakesph/",
-    "/quakesph/index.html",
-    "/quakesph/style.css",
-    "/quakesph/main.js",
-    "/quakesph/logo.svg",
-    "/quakesph/cover.png",
-    "/quakesph/192.png",
-    "/quakesph/512.png",
-    "/quakesph/manifest.json",
-    "/quakesph/plates.json"
+    "./",
+    "index.html",
+    "style.css",
+    "main.js",
+    "logo.svg",
+    "cover.png",
+    "192.png",
+    "512.png",
+    "manifest.json",
+    "plates.json"
 ];
 
+// Installation: Cache static assets and immediately take control
 self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
@@ -20,6 +21,7 @@ self.addEventListener("install", (event) => {
     );
 });
 
+// Activation: Clean up old caches
 self.addEventListener("activate", (event) => {
     event.waitUntil(
         caches.keys()
@@ -31,6 +33,7 @@ self.addEventListener("activate", (event) => {
     );
 });
 
+// Fetch: Cache First, falling back to Network
 self.addEventListener("fetch", (event) => {
     event.respondWith(
         caches.match(event.request)
@@ -38,8 +41,9 @@ self.addEventListener("fetch", (event) => {
     );
 });
 
+// Message: Allow clients to manually skip waiting (for updates)
 self.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'SKIP_WAITING') {
+    if (event.data?.type === 'SKIP_WAITING') {
         self.skipWaiting();
     }
 });

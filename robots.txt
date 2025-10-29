@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://juliusalfeche.com/quakesph/sitemap.xml.php
+Sitemap: https://juliusalfeche.github.io/quakesph/sitemap.xml
