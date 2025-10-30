@@ -6,7 +6,7 @@
     --text-dark: #fff;
     --muted: #555;
     --accent: #2c3e50;
-    --link-light: #0066cc;
+    --link-light: #0056b3;
     --link-dark: #80bfff;
     --card-bg: #f8f9fa;
     color-scheme: light dark;
@@ -44,7 +44,7 @@ a {
 
 a:hover,
 a:focus {
-    color: #003366;
+    color: #f5f6f7;
     text-decoration: underline;
 }
 
@@ -291,7 +291,7 @@ body::before {
 
 #em-footer a:hover,
 #em-footer a:focus {
-    color: #003366;
+    color: #f5f6f7;
     text-decoration: underline;
 }
 
