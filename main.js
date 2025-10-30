@@ -227,6 +227,10 @@ document.addEventListener('DOMContentLoaded', () => {
         navigator.geolocation.getCurrentPosition(pos => {
             const userLatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
             userMarker.setLatLng(userLatLng).addTo(map);
+			const markerElement = userMarker.getElement();
+			if (markerElement) {
+				markerElement.setAttribute('aria-label', 'Your current location');
+				}
             findNearestQuakeAndInjectDistance(userLatLng);
         }, err => {
             statusEl.innerHTML = '<i>To see the quake distance, allow location access in settings.</i>';

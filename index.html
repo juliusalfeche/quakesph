@@ -84,7 +84,8 @@
             </div>
 
             <div class="em-map-controls" role="region" aria-label="Map controls">
-                <select id="em-mag-filter" aria-controls="em-map em-table">
+                <label for="em-mag-filter" class="visually-hidden">Filter by Magnitude</label>
+				<select id="em-mag-filter" aria-controls="em-map em-table">
                     <option value="0-10" selected>All Magnitudes</option>
                     <option value="4-4.9">Magnitude 4</option>
                     <option value="5-5.9">Magnitude 5</option>
@@ -92,14 +93,16 @@
                     <option value="7-10">Magnitude 7+</option>
                 </select>
 
-                <select id="em-time-filter">
+                <label for="em-time-filter" class="visually-hidden">Filter by Time Period</label>
+				<select id="em-time-filter">
                     <option value="hour">Last Hour</option>
                     <option value="day">Last Day</option>
                     <option value="week" selected>Last Week</option>
                     <option value="month">Last Month</option>
                 </select>
 
-                <select id="em-basemap">
+                <label for="em-basemap" class="visually-hidden">Select Map Basemap</label>
+				<select id="em-basemap">
                     <option value="auto" selected>CARTO Maps</option>
                     <option value="google_hybrid">Google Maps</option>
                     <option value="osm">OpenStreetMap</option>
@@ -111,10 +114,10 @@
             </div>
 
             <div id="em-legend" role="list" aria-label="Magnitude legend">
-                <div class="em-legend-item" data-min="4" data-max="4.9"><span class="em-legend-color"></span><span>Light</span></div>
-                <div class="em-legend-item" data-min="5" data-max="5.9"><span class="em-legend-color"></span><span>Moderate</span></div>
-                <div class="em-legend-item" data-min="6" data-max="6.9"><span class="em-legend-color"></span><span>Strong</span></div>
-                <div class="em-legend-item" data-min="7" data-max="10"><span class="em-legend-color"></span><span>Major</span></div>
+                <div class="em-legend-item" role="listitem" data-min="4" data-max="4.9"><span class="em-legend-color"></span><span>Light</span></div>
+                <div class="em-legend-item" role="listitem" data-min="5" data-max="5.9"><span class="em-legend-color"></span><span>Moderate</span></div>
+                <div class="em-legend-item" role="listitem" data-min="6" data-max="6.9"><span class="em-legend-color"></span><span>Strong</span></div>
+                <div class="em-legend-item" role="listitem" data-min="7" data-max="10"><span class="em-legend-color"></span><span>Major</span></div>
             </div>
 
             <section class="visually-hidden">
