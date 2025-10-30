@@ -54,7 +54,7 @@ It features **personalized location tracking** (distance to the nearest quake!),
 
 ## ⚠️ Disclaimer
 
-The information provided by **QuakesPH** is for **educational and informational purposes only**. While we strive to provide accurate and up-to-date earthquake data, we **do not guarantee the completeness, reliability, or timeliness** of the information.
+The information provided by **QuakesPH** is for **educational and informational purposes only**. While I strive to provide accurate and up-to-date earthquake data, I **do not guarantee the completeness, reliability, or timeliness** of the information.
 
 **QuakesPH only displays earthquakes of magnitude 4.0 and above**. It is **not a substitute for official warnings or advice** from local authorities, emergency services, or the **Philippine Institute of Volcanology and Seismology (PHIVOLCS)**. Users should **always follow official guidance and take necessary precautions** in the event of seismic activity.
 
