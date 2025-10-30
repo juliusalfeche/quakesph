@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const magColor = getMagColor(latestQuake.mag);
         const formattedMag = latestQuake.mag.toFixed(1);
 
-        statusEl.innerHTML = `Latest <i><span style="color:${magColor};font-weight:600;">Magnitude ${formattedMag}</span> ⟷ <span class="blinking-text" style="color:#007bff;font-weight:600;">${distanceKm} km</span></i> Away`;
+        statusEl.innerHTML = `<i>Latest <span style="color:${magColor};font-weight:600;">Magnitude ${formattedMag}</span> ⟷ <span class="blinking-text" style="color:#007bff;font-weight:600;">${distanceKm} km</span> Away</i>`;
 
         if (lineToLatestQuake) map.removeLayer(lineToLatestQuake);
 
