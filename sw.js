@@ -1,4 +1,5 @@
-const CACHE_NAME = "quakesph-v6";
+const CACHE_NAME = "quakesph-v7";
+
 const STATIC_ASSETS = [
     "./",
     "index.html",
@@ -12,7 +13,7 @@ const STATIC_ASSETS = [
     "plates.json"
 ];
 
-// Installation: Cache static assets and immediately take control
+// Service Worker Lifecycle Events
 self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
@@ -21,7 +22,6 @@ self.addEventListener("install", (event) => {
     );
 });
 
-// Activation: Clean up old caches
 self.addEventListener("activate", (event) => {
     event.waitUntil(
         caches.keys()
@@ -33,7 +33,7 @@ self.addEventListener("activate", (event) => {
     );
 });
 
-// Fetch: Cache First, falling back to Network
+// Fetch Handling: Cache First, falling back to Network
 self.addEventListener("fetch", (event) => {
     event.respondWith(
         caches.match(event.request)
@@ -41,7 +41,7 @@ self.addEventListener("fetch", (event) => {
     );
 });
 
-// Message: Allow clients to manually skip waiting (for updates)
+// Communication: Allow manual skipWaiting
 self.addEventListener('message', (event) => {
     if (event.data?.type === 'SKIP_WAITING') {
         self.skipWaiting();

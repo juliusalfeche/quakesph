@@ -1,4 +1,7 @@
-const PH_BOUNDS_ARRAY = [[4, 116], [21, 135]];
+const PH_BOUNDS_ARRAY = [
+    [4, 116],
+    [21, 135]
+];
 const REFRESH_INTERVAL = 60000;
 const MIN_ZOOM_FOR_PLATES = 4;
 
@@ -10,21 +13,23 @@ let lastController = null;
 let userLocationAttempted = false;
 let lineToLatestQuake = null;
 
-// --- Service Worker Logic (PWA) ---
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/quakesph/sw.js?version=' + Date.now()).then(reg => {
-        if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+        if (reg.waiting) reg.waiting.postMessage({
+            type: 'SKIP_WAITING'
+        });
         reg.addEventListener('updatefound', () => {
             const newWorker = reg.installing;
             newWorker.addEventListener('statechange', () => {
                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller)
-                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                    newWorker.postMessage({
+                        type: 'SKIP_WAITING'
+                    });
             });
         });
     });
 }
 
-// --- Utility Functions ---
 const toRad = deg => (deg * Math.PI) / 180;
 
 const getDistanceKm = (lat1, lon1, lat2, lon2) => {
@@ -40,7 +45,9 @@ const getDistanceKm = (lat1, lon1, lat2, lon2) => {
 const formatQuakeTime = ts => {
     const d = new Date(ts);
     const day = String(d.getDate()).padStart(2, '0');
-    const month = d.toLocaleString('en-US', { month: 'long' });
+    const month = d.toLocaleString('en-US', {
+        month: 'long'
+    });
     const year = d.getFullYear();
     let h = d.getHours();
     const m = String(d.getMinutes()).padStart(2, '0');
@@ -59,9 +66,7 @@ const fadeMarker = (marker, show = true, duration = 400) => {
 const fadeInMarkers = (markers, delay = 100) =>
     markers.forEach((m, i) => setTimeout(() => fadeMarker(m, true), i * delay));
 
-
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Initial DOM & Security Setup ---
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('keydown', e => {
         if ((e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'i') ||
@@ -76,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const PH_BOUNDS = L.latLngBounds(PH_BOUNDS_ARRAY);
 
-    // --- Configuration ---
     const baseLayers = {
         osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
         google_hybrid: L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}'),
@@ -84,35 +88,69 @@ document.addEventListener('DOMContentLoaded', () => {
         carto_dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png')
     };
 
-    const magConfig = [
-        { min: 4, max: 4.9, color: isDark ? '#27AE60' : '#2ECC71' },
-        { min: 5, max: 5.9, color: isDark ? '#F39C12' : '#F1C40F' },
-        { min: 6, max: 6.9, color: isDark ? '#D35400' : '#E67E22' },
-        { min: 7, max: 10, color: isDark ? '#E74C3C' : '#C0392B' }
+    const magConfig = [{
+            min: 4,
+            max: 4.9,
+            color: isDark ? '#27AE60' : '#2ECC71'
+        },
+        {
+            min: 5,
+            max: 5.9,
+            color: isDark ? '#F39C12' : '#F1C40F'
+        },
+        {
+            min: 6,
+            max: 6.9,
+            color: isDark ? '#D35400' : '#E67E22'
+        },
+        {
+            min: 7,
+            max: 10,
+            color: isDark ? '#E74C3C' : '#C0392B'
+        }
     ];
 
     const getMagColor = mag =>
         magConfig.find(c => mag >= c.min && mag <= c.max)?.color || '#999';
 
-    // --- Map Initialization ---
     currentBase = isDark ? baseLayers.carto_dark : baseLayers.carto_light;
-    const map = L.map('em-map', { layers: [currentBase], attributionControl: false }).fitBounds(PH_BOUNDS);
+    const map = L.map('em-map', {
+        layers: [currentBase],
+        attributionControl: false
+    }).fitBounds(PH_BOUNDS);
     const quakeLayer = L.layerGroup().addTo(map);
     const statusEl = document.getElementById('nearest-status');
 
-    // PH Bounds Rectangle
-    const phBoundsRect = L.rectangle(PH_BOUNDS, { color: 'gray', weight: 1, dashArray: '5,5', fillOpacity: 0.1 });
+    const phBoundsRect = L.rectangle(PH_BOUNDS, {
+        color: 'gray',
+        weight: 1,
+        dashArray: '5,5',
+        fillOpacity: 0.1
+    });
     let phBoundsLayer = null;
-    const showPHBounds = () => { if (!phBoundsLayer) phBoundsLayer = phBoundsRect.addTo(map); };
-    const hidePHBounds = () => { if (phBoundsLayer) { map.removeLayer(phBoundsLayer); phBoundsLayer = null; } };
+    const showPHBounds = () => {
+        if (!phBoundsLayer) phBoundsLayer = phBoundsRect.addTo(map);
+    };
+    const hidePHBounds = () => {
+        if (phBoundsLayer) {
+            map.removeLayer(phBoundsLayer);
+            phBoundsLayer = null;
+        }
+    };
 
-    // Plate Boundaries Layer
     const plateBoundariesURL = '/quakesph/plates.json';
-    let plateBoundaries = null, plateData = null;
+    let plateBoundaries = null,
+        plateData = null;
 
     const showPlateBoundaries = () => {
         if (plateData && !plateBoundaries) {
-            plateBoundaries = L.geoJSON(plateData, { style: { color: 'red', weight: 0.5, opacity: 0.8 } }).addTo(map);
+            plateBoundaries = L.geoJSON(plateData, {
+                style: {
+                    color: 'red',
+                    weight: 0.5,
+                    opacity: 0.8
+                }
+            }).addTo(map);
         } else if (!plateData) {
             fetch(plateBoundariesURL)
                 .then(r => r.json())
@@ -123,14 +161,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch(console.error);
         }
     };
-    const hidePlateBoundaries = () => { if (plateBoundaries) { map.removeLayer(plateBoundaries); plateBoundaries = null; } };
+    const hidePlateBoundaries = () => {
+        if (plateBoundaries) {
+            map.removeLayer(plateBoundaries);
+            plateBoundaries = null;
+        }
+    };
 
     map.on('zoomend', () => {
-        if (map.getZoom() >= MIN_ZOOM_FOR_PLATES) { showPlateBoundaries(); showPHBounds(); }
-        else { hidePlateBoundaries(); hidePHBounds(); }
+        if (map.getZoom() >= MIN_ZOOM_FOR_PLATES) {
+            showPlateBoundaries();
+            showPHBounds();
+        } else {
+            hidePlateBoundaries();
+            hidePHBounds();
+        }
     });
 
-    // --- Rendering & UI Helpers ---
     const updateLegendColors = () => {
         document.querySelectorAll('.em-legend-item').forEach(item => {
             const min = parseFloat(item.dataset.min);
@@ -144,7 +191,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateLegend = () => {
         document.querySelectorAll('.em-legend-item').forEach(i => {
-            const min = +i.dataset.min, max = +i.dataset.max;
+            const min = +i.dataset.min,
+                max = +i.dataset.max;
             i.classList.toggle('active', quakeData.some(q => q.mag >= min && q.mag <= max));
         });
     };
@@ -168,19 +216,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (activeMarker && activeMarker !== marker) activeMarker.closePopup();
                 marker.bringToFront();
                 fadeMarker(marker, true);
-                map.flyTo(eq.latlng, Math.max(map.getZoom(), 6.5), { animate: true, duration: 2 });
+                map.flyTo(eq.latlng, Math.max(map.getZoom(), 6.5), {
+                    animate: true,
+                    duration: 2
+                });
                 map.once('moveend', () => {
                     marker.openPopup();
                     activeMarker = marker;
                     setTimeout(() => fadeInMarkers(others, 50), 3000);
                 });
-                document.getElementById('em-header').scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('em-header').scrollIntoView({
+                    behavior: 'smooth'
+                });
             };
             tbody.appendChild(tr);
         });
     };
 
-    // --- User Location Logic ---
     const userMarker = L.marker([0, 0], {
         icon: L.divIcon({
             className: 'user-location-marker',
@@ -191,7 +243,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const findNearestQuakeAndInjectDistance = (userLatLng) => {
         if (!quakeData.length) {
             statusEl.innerHTML = '<i>No recent quakes found.</i>';
-            if (lineToLatestQuake) { map.removeLayer(lineToLatestQuake); lineToLatestQuake = null; }
+            if (lineToLatestQuake) {
+                map.removeLayer(lineToLatestQuake);
+                lineToLatestQuake = null;
+            }
             return;
         }
 
@@ -225,12 +280,15 @@ document.addEventListener('DOMContentLoaded', () => {
         statusEl.innerHTML = '';
 
         navigator.geolocation.getCurrentPosition(pos => {
-            const userLatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+            const userLatLng = {
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude
+            };
             userMarker.setLatLng(userLatLng).addTo(map);
-			const markerElement = userMarker.getElement();
-			if (markerElement) {
-				markerElement.setAttribute('aria-label', 'Your current location');
-				}
+            const markerElement = userMarker.getElement();
+            if (markerElement) {
+                markerElement.setAttribute('aria-label', 'Your current location');
+            }
             findNearestQuakeAndInjectDistance(userLatLng);
         }, err => {
             statusEl.innerHTML = '<i>To see the quake distance, allow location access in settings.</i>';
@@ -238,7 +296,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // --- Main Data Fetching ---
     const loadEarthquakes = async () => {
         if (lastController) lastController.abort();
         const controller = new AbortController();
@@ -246,7 +303,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const [minMag, maxMag] = document.getElementById('em-mag-filter').value.split('-').map(Number);
         const timeFilter = document.getElementById('em-time-filter').value;
-        const end = new Date(), start = new Date();
+        const end = new Date(),
+            start = new Date();
 
         if (timeFilter === 'hour') start.setHours(start.getHours() - 1);
         else if (timeFilter === 'day') start.setDate(start.getDate() - 1);
@@ -258,11 +316,17 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('em-quake-count').innerHTML = '';
 
         try {
-            const response = await fetch(url, { signal: controller.signal, cache: 'no-cache' });
+            const response = await fetch(url, {
+                signal: controller.signal,
+                cache: 'no-cache'
+            });
             const data = await response.json();
             quakeLayer.clearLayers();
 
-            if (lineToLatestQuake) { map.removeLayer(lineToLatestQuake); lineToLatestQuake = null; }
+            if (lineToLatestQuake) {
+                map.removeLayer(lineToLatestQuake);
+                lineToLatestQuake = null;
+            }
             document.querySelectorAll('.blinking-marker').forEach(el => el.classList.remove('blinking-marker'));
 
             quakeData = (data.features || []).filter(f => {
@@ -290,7 +354,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     opacity: 0
                 }).bindPopup(initialPopupContent).addTo(quakeLayer);
 
-                return { id: f.id, time: p.time, mag: p.mag, place: p.place, depth, url: p.url, latlng, marker };
+                return {
+                    id: f.id,
+                    time: p.time,
+                    mag: p.mag,
+                    place: p.place,
+                    depth,
+                    url: p.url,
+                    latlng,
+                    marker
+                };
             });
 
             quakeData.sort((a, b) => b.time - a.time);
@@ -305,7 +378,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (quakeData.length) {
                 const latestMarker = quakeData[0].marker;
-                map.flyTo(latestMarker.getLatLng(), Math.max(map.getZoom(), 6.5), { animate: true, duration: 2 });
+                map.flyTo(latestMarker.getLatLng(), Math.max(map.getZoom(), 6.5), {
+                    animate: true,
+                    duration: 2
+                });
                 map.once('moveend', () => {
                     quakeData.forEach(q => {
                         const el = q.marker.getElement?.();
@@ -330,7 +406,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             renderTable();
             updateLegend();
-            updateLegendColors();
 
             const quakeCountEl = document.getElementById('em-quake-count');
             const timePeriodMap = {
@@ -351,14 +426,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- Event Listeners & Theme Change ---
     document.querySelectorAll('.em-legend-item').forEach(item => {
         item.addEventListener('click', () => {
             const filter = document.getElementById('em-mag-filter');
             filter.value = filter.value === `${item.dataset.min}-${item.dataset.max}` ? '0-10' : `${item.dataset.min}-${item.dataset.max}`;
             loadEarthquakes();
         });
-        item.addEventListener('keydown', e => { if (['Enter', ' '].includes(e.key)) item.click(); });
+        item.addEventListener('keydown', e => {
+            if (['Enter', ' '].includes(e.key)) item.click();
+        });
     });
 
     document.getElementById('em-mag-filter').addEventListener('change', loadEarthquakes);
@@ -388,7 +464,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loadEarthquakes();
     });
 
-    // --- Initial Setup ---
     document.getElementById('current-year').textContent = new Date().getFullYear();
     updateLegendColors();
 

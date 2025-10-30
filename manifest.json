@@ -1,11 +1,11 @@
 {
-    "name": "QuakesPH",
+    "name": "QuakesPH | Philippines Earthquake Tracker",
     "short_name": "QuakesPH",
     "description": "QuakesPH is a progressive web application (PWA) that provides real-time earthquake tracking across the Philippines, powered by live data from the USGS Earthquake API.",
-    "start_url": ".",
-    "scope": ".",
+    "start_url": "./",
+    "scope": "./",
     "display": "standalone",
-    "orientation": "portrait-primary",
+    "orientation": "portrait",
     "background_color": "#2c3e50",
     "theme_color": "#2c3e50",
     "icons": [

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <title>QuakesPH | Philippines Earthquake Tracker – Live Updates & Interactive Map</title>
     <meta name="description" content="QuakesPH is a progressive web application (PWA) that provides real-time earthquake tracking across the Philippines, powered by live data from the USGS Earthquake API.">
     <meta name="keywords" content="QuakesPH, earthquake, map, Philippines, live, tracker, seismic, tremor, USGS">
@@ -15,11 +15,9 @@
     <meta name="theme-color" content="#2c3e50">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
-    
+
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="dns-prefetch" href="https://earthquake.usgs.gov">
-    <link rel="preload" as="image" href="cover.png" fetchpriority="high">
-
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
     <link rel="stylesheet" href="style.css">
 
@@ -73,19 +71,13 @@
         </header>
 
         <main role="main">
-            <section id="about-overview" class="overview-section visually-hidden">
-                <h1>QuakesPH Philippines Earthquake Tracker</h1>
-                <p>QuakesPH is a progressive web application (PWA) that provides real-time earthquake tracking across the Philippines, powered by live data from the USGS Earthquake API.</p>
-                <h2>Live Updates & Interactive Map</h2>
-            </section>
-
             <div id="em-nearest-quake" aria-live="polite">
-                <p id="nearest-status"><i></i></p>
+                <p id="nearest-status"></p>
             </div>
 
             <div class="em-map-controls" role="region" aria-label="Map controls">
                 <label for="em-mag-filter" class="visually-hidden">Filter by Magnitude</label>
-				<select id="em-mag-filter" aria-controls="em-map em-table">
+                <select id="em-mag-filter" aria-controls="em-map em-table">
                     <option value="0-10" selected>All Magnitudes</option>
                     <option value="4-4.9">Magnitude 4</option>
                     <option value="5-5.9">Magnitude 5</option>
@@ -94,7 +86,7 @@
                 </select>
 
                 <label for="em-time-filter" class="visually-hidden">Filter by Time Period</label>
-				<select id="em-time-filter">
+                <select id="em-time-filter">
                     <option value="hour">Last Hour</option>
                     <option value="day">Last Day</option>
                     <option value="week" selected>Last Week</option>
@@ -102,7 +94,7 @@
                 </select>
 
                 <label for="em-basemap" class="visually-hidden">Select Map Basemap</label>
-				<select id="em-basemap">
+                <select id="em-basemap">
                     <option value="auto" selected>CARTO Maps</option>
                     <option value="google_hybrid">Google Maps</option>
                     <option value="osm">OpenStreetMap</option>
@@ -114,18 +106,14 @@
             </div>
 
             <div id="em-legend" role="list" aria-label="Magnitude legend">
-                <div class="em-legend-item" role="listitem" data-min="4" data-max="4.9"><span class="em-legend-color"></span><span>Light</span></div>
-                <div class="em-legend-item" role="listitem" data-min="5" data-max="5.9"><span class="em-legend-color"></span><span>Moderate</span></div>
-                <div class="em-legend-item" role="listitem" data-min="6" data-max="6.9"><span class="em-legend-color"></span><span>Strong</span></div>
-                <div class="em-legend-item" role="listitem" data-min="7" data-max="10"><span class="em-legend-color"></span><span>Major</span></div>
+                <div class="em-legend-item" role="listitem" tabindex="0" data-min="4" data-max="4.9"><span class="em-legend-color"></span><span>Light</span></div>
+                <div class="em-legend-item" role="listitem" tabindex="0" data-min="5" data-max="5.9"><span class="em-legend-color"></span><span>Moderate</span></div>
+                <div class="em-legend-item" role="listitem" tabindex="0" data-min="6" data-max="6.9"><span class="em-legend-color"></span><span>Strong</span></div>
+                <div class="em-legend-item" role="listitem" tabindex="0" data-min="7" data-max="10"><span class="em-legend-color"></span><span>Major</span></div>
             </div>
 
-            <section class="visually-hidden">
-                <h3>Latest Earthquakes</h3>
-            </section>
-
             <div id="em-list-container">
-                <div id="em-quake-count" aria-live="polite"><i></i></div>
+                <div id="em-quake-count" aria-live="polite"></div>
                 <div id="em-refresh-status" aria-live="polite"></div>
                 <table id="em-table" aria-label="Latest earthquakes">
                     <thead>
@@ -153,6 +141,6 @@
     </footer>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
-    <script type="module" src="main.js"></script>
+    <script type="module" src="main.js" defer></script>
 </body>
 </html>

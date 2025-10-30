@@ -2,16 +2,21 @@
     --max-width: 1080px;
     --bg-light: #f5f6f7;
     --bg-dark: #121212;
-    --text: #333;
-    --text-dark: #fff;
-    --muted: #555;
+    --text-light: #333;
+    --text-dark: #e0e0e0; /* Adjusted from #fff to better match dark theme text below */
+    --text-muted: #555;
     --accent: #2c3e50;
-    --link-light: #0056b3;
-    --link-dark: #80bfff;
-    --card-bg: #f8f9fa;
+    --link-primary: #0056b3;
+    --link-hover: #a4d4ff; /* New variable for dark mode link hover */
+    --card-bg-light: #f8f9fa;
+    --border-color-light: #ddd;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-dark: rgba(255, 255, 255, 0.05);
+
     color-scheme: light dark;
 }
 
+/* Accessibility */
 .visually-hidden {
     position: absolute !important;
     width: 1px;
@@ -24,8 +29,9 @@
     border: 0;
 }
 
-/* Base and Links */
-html, body {
+/* Base */
+html,
+body {
     height: 100%;
     margin: 0;
 }
@@ -33,11 +39,12 @@ html, body {
 body {
     font-family: system-ui, sans-serif;
     background: var(--bg-light);
-    color: var(--text);
+    color: var(--text-light);
 }
 
+/* Links */
 a {
-    color: var(--link-light);
+    color: var(--link-primary);
     text-decoration: none;
     transition: color 0.2s ease;
 }
@@ -48,13 +55,14 @@ a:focus {
     text-decoration: underline;
 }
 
-/* Layout and Header */
+/* Layout */
 .container {
     max-width: var(--max-width);
     margin: 0 auto;
     padding: 0 1rem;
 }
 
+/* Header */
 #em-header {
     color: var(--accent);
     display: flex;
@@ -86,11 +94,21 @@ a:focus {
 }
 
 @keyframes shake {
-    0%, 100% { transform: rotate(0); }
-    20% { transform: rotate(-10deg); }
-    40% { transform: rotate(10deg); }
-    60% { transform: rotate(-8deg); }
-    80% { transform: rotate(8deg); }
+    0%, 100% {
+        transform: rotate(0);
+    }
+    20% {
+        transform: rotate(-10deg);
+    }
+    40% {
+        transform: rotate(10deg);
+    }
+    60% {
+        transform: rotate(-8deg);
+    }
+    80% {
+        transform: rotate(8deg);
+    }
 }
 
 /* Background Overlay */
@@ -106,7 +124,7 @@ body::before {
 
 /* Map Controls */
 .em-map-controls {
-    background: var(--card-bg);
+    background: var(--card-bg-light);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-wrap: wrap;
@@ -126,57 +144,20 @@ body::before {
     padding: 0.45rem 0.75rem;
 }
 
-/* Map & Animations */
+/* Map */
 #em-map-container {
     height: 55vh;
     width: 100%;
     min-height: 360px;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px var(--shadow-light);
     margin-bottom: 1rem;
 }
 
 #em-map {
     height: 100%;
     width: 100%;
-}
-
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
-.blinking-marker {
-    animation: blink 1s infinite;
-}
-
-.blinking-text {
-    animation: blink 1.5s step-start infinite;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    100% { transform: scale(1.6); opacity: 0; }
-}
-
-.user-location-marker {
-    margin-left: -8px;
-    margin-top: -8px;
-}
-
-.user-location-marker div {
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes dash-animation {
-    to { stroke-dashoffset: 0; }
-}
-
-.animated-path {
-    stroke-dasharray: 5;
-    stroke-dashoffset: 50;
-    animation: dash-animation 2s linear infinite;
 }
 
 /* Status & Legend */
@@ -187,7 +168,7 @@ body::before {
 
 #nearest-status {
     display: block;
-    color: var(--text);
+    color: var(--text-light); /* Explicitly set to light theme text variable */
 }
 
 #em-legend {
@@ -219,6 +200,58 @@ body::before {
     display: inline-block;
 }
 
+/* Animations */
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.blinking-marker,
+.blinking-text {
+    animation: blink 1s infinite;
+}
+
+.blinking-text {
+    animation-duration: 1.5s; /* Override for text */
+    animation-timing-function: step-start;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.6);
+        opacity: 0;
+    }
+}
+
+.user-location-marker {
+    margin-left: -8px;
+    margin-top: -8px;
+}
+
+.user-location-marker div {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes dash-animation {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.animated-path {
+    stroke-dasharray: 5;
+    stroke-dashoffset: 50;
+    animation: dash-animation 2s linear infinite;
+}
+
 /* Earthquake Data Table */
 #em-list-container {
     max-width: var(--max-width);
@@ -233,7 +266,7 @@ body::before {
 }
 
 #em-refresh-status {
-    color: var(--muted);
+    color: var(--text-muted);
     text-align: center;
     font-size: 0.9rem;
     margin-bottom: 0.25rem;
@@ -242,7 +275,7 @@ body::before {
 #em-table {
     width: 100%;
     border-collapse: collapse;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color-light);
     border-radius: 8px;
     overflow: hidden;
     font-size: 0.95rem;
@@ -256,7 +289,7 @@ body::before {
 }
 
 #em-table th {
-    background: var(--card-bg);
+    background: var(--card-bg-light);
 }
 
 #em-table td:nth-child(4) {
@@ -273,8 +306,8 @@ body::before {
     max-width: var(--max-width);
     margin: 2rem auto 1rem;
     padding: 1rem;
-    border-top: 1px solid #ddd;
-    color: var(--text);
+    border-top: 1px solid var(--border-color-light);
+    color: var(--text-light);
     display: flex;
     justify-content: center;
     text-align: center;
@@ -283,7 +316,7 @@ body::before {
 }
 
 #em-footer a {
-    color: var(--link-light);
+    color: var(--link-primary);
     text-decoration: none;
     margin: 0 0.25rem;
     transition: color 0.2s ease;
@@ -295,21 +328,22 @@ body::before {
     text-decoration: underline;
 }
 
-/* Media Queries & Dark Mode */
+/* --- Dark Mode and Media Queries --- */
+
 @media (prefers-color-scheme: dark) {
     body {
         background: var(--bg-dark);
-        color: #e0e0e0;
+        color: var(--text-dark);
     }
 
     /* Links */
     a {
-        color: var(--link-dark);
+        color: var(--link-dark, #80bfff); /* Fallback for link-dark from :root */
     }
 
     a:hover,
     a:focus {
-        color: #a4d4ff;
+        color: var(--link-hover);
     }
 
     /* Header & Status */
@@ -329,13 +363,13 @@ body::before {
 
     .em-map-controls select {
         background: rgba(42, 42, 42, 0.8);
-        color: #e0e0e0;
+        color: var(--text-dark);
         border-color: #444;
     }
 
     /* Map */
     #em-map-container {
-        box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+        box-shadow: 0 4px 10px var(--shadow-dark);
     }
 
     /* Table */
@@ -358,25 +392,26 @@ body::before {
         background-color: rgba(200, 200, 200, 0.1);
     }
 
-    /* Footer & Status */
+    /* Footer & Status - CONSOLIDATED */
     #em-refresh-status,
     #em-legend,
     #em-quake-count,
     #em-footer {
         color: #ccc;
     }
-
+    
     #em-footer {
         border-top-color: #444;
     }
 
+    /* Footer Links - CONSOLIDATED */
     #em-footer a {
-        color: var(--link-dark);
+        color: var(--link-dark, #80bfff);
     }
 
     #em-footer a:hover,
     #em-footer a:focus {
-        color: #a4d4ff;
+        color: var(--link-hover);
     }
 }
 
