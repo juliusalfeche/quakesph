@@ -1,43 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="google-site-verification" content="v9ybPZJGSBNM8pbW8au8KaXB_fsDwRGwMhpNC595D9k" />
-	<title>QuakesPH | Philippines Earthquake Tracker – Live Updates & Interactive Map</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>QuakesPH | Philippines Earthquake Tracker – Live Updates & Interactive Map</title>
+    <meta name="description" content="QuakesPH is a progressive web application (PWA) that provides real-time earthquake tracking across the Philippines, powered by live data from the USGS Earthquake API.">
+    <meta name="keywords" content="QuakesPH, earthquake, map, Philippines, live, tracker, seismic, tremor, USGS">
+    <meta name="author" content="Julius Alfeche">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://juliusalfeche.github.io/quakesph/">
+    <meta name="google-site-verification" content="v9ybPZJGSBNM8pbW8au8KaXB_fsDwRGwMhpNC595D9k">
 
-    <meta name="description" content="QuakesPH is a progressive web application (PWA) that provides real-time earthquake tracking across the Philippines, powered by live data from the USGS Earthquake API." />
-    <meta name="keywords" content="QuakesPH, earthquake, map, Philippines, live, tracker, seismic, tremor, USGS" />
-    <meta name="author" content="Julius Alfeche" />
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://juliusalfeche.github.io/quakesph/" />
+    <meta name="theme-color" content="#2c3e50">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link rel="dns-prefetch" href="https://earthquake.usgs.gov">
+    <link rel="preload" as="image" href="cover.png">
 
-    <meta name="theme-color" content="#2c3e50" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="application-name" content="QuakesPH" />
-    <link rel="manifest" href="manifest.json" />
-    <link rel="icon" type="image/svg+xml" href="logo.svg" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="style.css">
 
-    <meta property="og:site_name" content="QuakesPH" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="QuakesPH | Philippines Earthquake Tracker – Live Updates & Interactive Map" />
-    <meta property="og:description" content="QuakesPH is a progressive web application (PWA) that provides real-time earthquake tracking across the Philippines, powered by live data from the USGS Earthquake API." />
-    <meta property="og:url" content="https://juliusalfeche.github.io/quakesph/" />
-    <meta property="og:image" content="https://juliusalfeche.github.io/quakesph/cover.png" />
-    <meta property="og:locale" content="en_PH" />
+    <meta property="og:site_name" content="QuakesPH">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="QuakesPH | Philippines Earthquake Tracker – Live Updates & Interactive Map">
+    <meta property="og:description" content="QuakesPH is a progressive web application (PWA) that provides real-time earthquake tracking across the Philippines, powered by live data from the USGS Earthquake API.">
+    <meta property="og:url" content="https://juliusalfeche.github.io/quakesph/">
+    <meta property="og:image" content="https://juliusalfeche.github.io/quakesph/cover.png">
+    <meta property="og:locale" content="en_PH">
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@juliusalfeche" />
-    <meta name="twitter:title" content="QuakesPH | Philippines Earthquake Tracker – Live Updates & Interactive Map" />
-    <meta name="twitter:description" content="QuakesPH is a progressive web application (PWA) that provides real-time earthquake tracking across the Philippines, powered by live data from the USGS Earthquake API." />
-    <meta name="twitter:image" content="https://juliusalfeche.github.io/quakesph/cover.png" />
-
-    <link rel="preconnect" href="https://unpkg.com" crossorigin />
-    <link rel="dns-prefetch" href="https://earthquake.usgs.gov" />
-    <link rel="preload" as="image" href="cover.png" />
-
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="style.css" />
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@juliusalfeche">
+    <meta name="twitter:title" content="QuakesPH | Philippines Earthquake Tracker – Live Updates & Interactive Map">
+    <meta name="twitter:description" content="QuakesPH is a progressive web application (PWA) that provides real-time earthquake tracking across the Philippines, powered by live data from the USGS Earthquake API.">
+    <meta name="twitter:image" content="https://juliusalfeche.github.io/quakesph/cover.png">
 
     <script type="application/ld+json">
         {
@@ -65,12 +63,11 @@
         }
     </script>
 </head>
-
 <body>
     <div class="container">
         <header id="em-header">
             <a href="#" onclick="location.reload(true)" class="header-link" aria-label="Reload QuakesPH">
-                <img src="logo.svg" alt="QuakesPH Logo" class="header-logo" loading="lazy" />
+                <img src="logo.svg" alt="QuakesPH Logo" class="header-logo" />
                 <span>QuakesPH</span>
             </a>
         </header>
