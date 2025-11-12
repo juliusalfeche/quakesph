@@ -20,6 +20,8 @@
     <link rel="dns-prefetch" href="https://earthquake.usgs.gov">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
     <link rel="stylesheet" href="style.css">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-**bKSL1F4C1g2S0sI+N44wKjB0u+F0JvH142x4c6A6u+3Vf2R+w4w8I5S5/r+x1Q+2Q==**" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <meta property="og:site_name" content="QuakesPH">
     <meta property="og:type" content="website">
@@ -133,8 +135,13 @@
     <footer id="em-footer">
         <div class="footer-center">
             <p>
-                <a href="https://www.facebook.com/quakesph" target="_blank" rel="noopener">Facebook</a> |
-                <a href="https://github.com/juliusalfeche/quakesph" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://www.facebook.com/quakesph" target="_blank" rel="noopener" aria-label="QuakesPH on Facebook">
+					<i class="fab fa-facebook-f"></i>
+				</a>
+				<span class="separator"> | </span>
+                <a href="https://github.com/juliusalfeche/quakesph" target="_blank" rel="noopener" aria-label="QuakesPH on GitHub">
+					<i class="fab fa-github"></i>
+				</a>
             </p>
             <p>© <span id="current-year"></span> <b>QuakesPH</b></p>
         </div>
