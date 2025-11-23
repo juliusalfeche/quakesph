@@ -5,6 +5,37 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.0.0] - 2025-11-24
+### 🌟 Major Release — *“QuakesPH v2.0: Dual Source Data & Enhanced UX”*
+
+This is a major architectural release focused on data completeness, redundancy, and user experience. The most significant change is the integration of a **dual data source** to provide a more comprehensive view of seismic activity, especially for smaller quakes.
+
+---
+
+### 🌐 Data & Architecture
+- **Dual Data Source Integration:** Added **EMSC-CSEM / Seismic Portal** data to supplement the primary **USGS Earthquake API** feed.
+- **Enhanced Coverage:** Quakes of magnitude **M0.0 to M3.9** are now included when the filter is set to "All Magnitudes," greatly increasing the density of seismic data.
+- **Data Deduplication:** Implemented custom logic to cross-reference and **filter out duplicate earthquake events** reported by both USGS and EMSC, ensuring a clean and reliable dataset.
+- **Improved Filtering:** Magnitude filters now support a wider range, accurately reflecting data availability (e.g., M0-M10).
+
+### 🗺️ Map & Visualization
+- **Persistent Boundary Layers:** Explicitly added and managed **Tectonic Plate Boundaries** and **Philippine Search Bounds** as map layers, visible at higher zoom levels (zoom $\ge 4$). 
+
+[Image of Philippine tectonic plates]
+
+- **Latest Quake Focus:** The map now uses `flyTo` animation to focus on the latest earthquake upon initial load and filter changes.
+- **Enhanced Animation:** The latest quake marker is highlighted with a **blinking effect** (`.blinking-marker`).
+
+### 🎨 User Interface & Performance
+- **Optimized Dark Mode:** Implemented a refined dark theme with **blurred/transparent UI backgrounds** and better contrast for controls and tables.
+- **Performance:** Implemented robust **Service Worker update logic** (using `SKIP_WAITING` messages) to ensure the PWA updates instantly in the background.
+- **Branding:** Added subtle "shake" animation to the header logo and a transparent branded background image.
+- **UX Refinements:** The distance-to-quake display is now animated with a **blinking text effect** to draw immediate attention.
+
+> *“Comprehensive, reliable, and faster than ever — tracking the full picture of the Earth’s movement.”*
+
+---
+
 ## [1.1.0] - 2025-10-28
 ### 🚀 Update — *“QuakesPH v1.1: Geolocation & Performance”*
 
@@ -56,8 +87,8 @@ This is the first public release of **QuakesPH**, a Progressive Web App (PWA) fo
 
 ### 🧩 Filters & Controls
 - Filter earthquakes by:
-  - **Magnitude:** All, 4+, 5+, 6+, 7+
-  - **Time Period:** Last Hour, Day, Week, Month
+  - **Magnitude:** All, 4+, 5+, 6+, 7+
+  - **Time Period:** Last Hour, Day, Week, Month
 - Change basemap view (CARTO Light/Dark, Google Hybrid, OSM).
 
 ### 🌗 Dark / Light Mode
