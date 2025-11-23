@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ---
 
 ## [2.0.0] - 2025-11-24
-### 🌟 Major Release — *“QuakesPH v2.0: Dual Source Data & Enhanced UX”*
+### 🌟 Major Release — *“QuakesPH v2.0: Dual Source Data”*
 
 This is a major architectural release focused on data completeness. The most significant change is the integration of a **dual data source** to provide a more comprehensive view of seismic activity, especially for smaller quakes.
 
