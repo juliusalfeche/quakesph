@@ -5,7 +5,7 @@ const STATIC_ASSETS = [
     "index.html",
     "style.css",
     "main.js",
-    "logo.svg",
+    "logo.png",
     "cover.png",
     "192.png",
     "512.png",
