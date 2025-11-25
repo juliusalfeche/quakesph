@@ -69,10 +69,26 @@ const fadeMarker = (marker, show = true, duration = 400) => {
 const fadeInMarkers = (markers, delay = 100) =>
     markers.forEach((m, i) => setTimeout(() => fadeMarker(m, true), i * delay));
 
-// --- Map and Data Initialization ---
+const toTitleCase = (str) => {
+    if (!str) return str;
+    const minorWords = /^(a|an|and|as|at|but|by|en|for|if|in|of|on|or|per|the|to|v|vs|with|via|km|mi)$/i;
+    return str.toLowerCase().split(' ').map((word, index, array) => {
+        if (word.match(minorWords) && index !== 0 && index !== array.length - 1) {
+            return word;
+        }
+        return word.split('-').map((w) => {
+            if (w.length > 0) {
+                w = w.charAt(0).toUpperCase() + w.slice(1);
+            }
+            return w;
+        }).join('-');
+    }).join(' ');
+};
 
+// --- Core Logic & Map Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Prevent common dev tool opening shortcuts (redundant code removed)
+
+    // Prevent common dev tool opening shortcuts
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('keydown', e => {
         if ((e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'i') ||
@@ -123,6 +139,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const getMagColor = mag =>
         magConfig.find(c => mag >= c.min && mag <= c.max)?.color || '#999';
+
+    const updateMagConfigColors = (dark) => {
+        magConfig[0].color = dark ? '#3498DB' : '#5DADE2';
+        magConfig[1].color = dark ? '#27AE60' : '#2ECC71';
+        magConfig[2].color = dark ? '#F39C12' : '#F1C40F';
+        magConfig[3].color = dark ? '#D35400' : '#E67E22';
+        magConfig[4].color = dark ? '#E74C3C' : '#C0392B';
+    };
 
     currentBase = isDark ? baseLayers.carto_dark : baseLayers.carto_light;
     const map = L.map('em-map', {
@@ -429,8 +453,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     const latlng = [lat, lon];
 
                     let placeName = p.place || p.flynn_region || "Unknown Location";
-                    if (placeName === placeName.toUpperCase()) {
-                        placeName = placeName.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
+
+                    // Apply title case if the string is all upper case or if it's from EMSC 
+                    if (placeName === placeName.toUpperCase() || p.agency === 'EMSC') {
+                        placeName = toTitleCase(placeName);
                     }
 
                     let linkUrl = (p.agency === 'USGS') ? p.url : '';
@@ -470,6 +496,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             quakeData.sort((a, b) => b.time - a.time);
 
+            // Set initial opacity to 0 for fade-in effect
             quakeData.forEach(q => {
                 const el = q.marker.getElement?.();
                 if (el) {
@@ -485,6 +512,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     duration: 2
                 });
                 map.once('moveend', () => {
+                    // Fade in all markers
                     quakeData.forEach(q => {
                         const el = q.marker.getElement?.();
                         if (el) {
@@ -498,7 +526,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (!userLocationAttempted) {
                         locateUser();
-                    } else if (userMarker.getLatLng() ?.lat) {
+                    } else if (userMarker.getLatLng()?.lat) {
                         findNearestQuakeAndInjectDistance(userMarker.getLatLng());
                     }
                 });
@@ -549,26 +577,23 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('em-time-filter').addEventListener('change', loadEarthquakes);
     document.getElementById('em-basemap').addEventListener('change', e => {
         map.removeLayer(currentBase);
-        currentBase = e.target.value === 'google_hybrid' ? baseLayers.google_hybrid :
-            e.target.value === 'osm' ? baseLayers.osm :
-            (isDark ? baseLayers.carto_dark : baseLayers.carto_light);
+        const selectedValue = e.target.value;
+        currentBase = baseLayers[selectedValue] || (isDark ? baseLayers.carto_dark : baseLayers.carto_light);
         map.addLayer(currentBase);
     });
 
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
         isDark = e.matches;
+
+        // Update base map if 'auto' is selected
         if (document.getElementById('em-basemap').value === 'auto') {
             map.removeLayer(currentBase);
             currentBase = isDark ? baseLayers.carto_dark : baseLayers.carto_light;
             map.addLayer(currentBase);
         }
 
-        magConfig[0].color = isDark ? '#3498DB' : '#5DADE2';
-        magConfig[1].color = isDark ? '#27AE60' : '#2ECC71';
-        magConfig[2].color = isDark ? '#F39C12' : '#F1C40F';
-        magConfig[3].color = isDark ? '#D35400' : '#E67E22';
-        magConfig[4].color = isDark ? '#E74C3C' : '#C0392B';
-
+        // Update magnitude colors
+        updateMagConfigColors(isDark);
         updateLegendColors();
         loadEarthquakes();
     });
