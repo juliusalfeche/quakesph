@@ -9,7 +9,7 @@
 ## Features
 
 - **Two data sources, one clean list.** USGS is the main source; EMSC fills in the smaller quakes (below M4). The same quake reported by both is shown once.
-- **Interactive map** with circles sized and colored by magnitude, and a pulsing ring on the latest quake.
+- **Interactive map** with circles sized and colored by magnitude, and a pulsing ring on the latest quake. If your device is set to *reduce motion*, the ring fades gently instead of pulsing.
 - **Filters:** last hour / day / week / month, and All / M4+ / M5+ / M6+ / M7+. Your choices are remembered on your device.
 - **Three map styles, no API key needed:** Dark (Esri Dark Gray), Satellite (Esri imagery) and Streets (OpenStreetMap).
 - **Plate boundaries** layer (on or off), to show where the Philippines sits on the Pacific Ring of Fire.
@@ -63,7 +63,7 @@ quakesph/
 ## Updating the site
 
 1. Change the files.
-2. In `sw.js`, raise the version (`quakesph-v3` → `quakesph-v4`) so installed copies refresh.
+2. In `sw.js`, raise the version (`quakesph-v4` → `quakesph-v5`) so installed copies refresh.
 
 To run it locally (the service worker needs a web server, not a double-click):
 

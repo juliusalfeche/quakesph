@@ -30,6 +30,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Removed the code that blocked right-click and F12 (it did not add security and hurt accessibility).
 
 ### 🐛 Fixes
+- Controls are centered, and only the main button is filled red.
+- With "reduce motion" turned on, the live dot and latest-quake ring now fade gently instead of staying frozen.
 - Quakes with a missing magnitude no longer break the whole list.
 - If one data source is down, the other still works and a notice explains it. If both are down, a clear message and a “Try again” button appear.
 - Slow requests now time out after 15 seconds; refreshing pauses while the tab is hidden.

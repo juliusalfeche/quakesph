@@ -9,6 +9,7 @@
     --text: #dddddd;
     --muted: #9f9f9f;
     --accent: #d32f2f;
+    --accent-bright: #ef5350;   /* for small marks on dark tiles (better contrast) */
     --on-accent: #ffffff;
     --radius: 16px;
 
@@ -82,10 +83,11 @@ h1, h2 { margin: 0; line-height: 1.2; letter-spacing: -0.02em; }
 
 #controls { display: flex; flex-direction: column; gap: 14px; }
 
-/* ---------- filters ---------- */
-.filters { display: flex; flex-wrap: wrap; gap: 14px 20px; }
+/* ---------- filters (centered, like the header and the legend) ---------- */
+#controls { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 24px; width: 100%; }
 .seg { border: 0; margin: 0; padding: 0; min-width: 0; }
-.seg legend { padding: 0; margin: 0 0 6px; color: var(--muted); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.seg legend { display: block; width: 100%; padding: 0; margin: 0 0 6px; text-align: center; color: var(--muted); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; }
 .seg__options { display: flex; gap: 4px; padding: 4px; border-radius: 12px; background: var(--surface); }
 .seg label, .chip { position: relative; }
 .seg input, .chip input {
@@ -93,20 +95,24 @@ h1, h2 { margin: 0; line-height: 1.2; letter-spacing: -0.02em; }
     margin: 0; opacity: 0; cursor: pointer;
 }
 .seg span, .chip span {
-    display: block; padding: 8px 14px; border-radius: 9px;
+    position: relative; display: block; padding: 8px 14px; border-radius: 9px;
     color: var(--muted); font-size: 0.9rem; white-space: nowrap;
     transition: background-color 0.15s, color 0.15s;
 }
 @media (hover: hover) {
     .seg input:not(:checked):hover + span, .chip input:not(:checked):hover + span { background: var(--surface-2); color: var(--text); }
 }
-.seg input:checked + span, .chip input:checked + span { background: var(--accent); color: var(--on-accent); }
+/* Selected = lighter tile, white text and a short red bar. Red fills are kept for the one main button. */
+.seg input:checked + span, .chip input:checked + span { background: var(--surface-3); color: #ffffff; }
+.seg input:checked + span::after {
+    content: ""; position: absolute; left: 30%; right: 30%; bottom: 3px; height: 2px; border-radius: 2px; background: var(--accent-bright);
+}
 .seg input:focus-visible + span, .chip input:focus-visible + span { outline: 3px solid var(--text); outline-offset: 2px; }
 
 /* ---------- buttons ---------- */
-.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; width: 100%; }
 .chip span { background: var(--surface); padding: 10px 16px; border-radius: 12px; }
-.chip input:checked + span::before { content: "\2713\00a0"; }
+.chip input:checked + span::before { content: "\2713\00a0"; color: var(--accent-bright); }
 
 .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -121,7 +127,7 @@ h1, h2 { margin: 0; line-height: 1.2; letter-spacing: -0.02em; }
 .btn--wide { width: 100%; padding: 14px; margin-top: 8px; }
 .btn:focus-visible, a:focus-visible, .quake__main:focus-visible { outline: 3px solid var(--text); outline-offset: 3px; }
 
-.distance { margin: 0; color: var(--muted); font-size: 0.9rem; }
+.distance { max-width: 62ch; margin: 0 auto; text-align: center; color: var(--muted); font-size: 0.9rem; }
 
 /* ---------- map ---------- */
 .map-wrap { position: relative; border-radius: var(--radius); overflow: hidden; background: var(--surface); }
@@ -216,6 +222,9 @@ h2 { font-size: 1.25rem; margin: 8px 0 12px; }
     .stats { gap: 8px; }
     .stat { padding: 12px 12px; }
     .filters { gap: 12px; }
+    .toolbar { display: grid; grid-template-columns: 1fr 1fr; }
+    #locate { grid-column: 1 / -1; }
+    .toolbar .btn, .chip span { width: 100%; text-align: center; }
     .seg { width: 100%; }
     .seg__options { width: 100%; }
     .seg label { flex: 1; }
@@ -224,7 +233,11 @@ h2 { font-size: 1.25rem; margin: 8px 0 12px; }
     .quake__ago { display: none; }
 }
 
+@keyframes breathe { 50% { opacity: 0.35; } }
+
+/* "Reduce motion" is on: no movement or growing rings, only a slow fade. */
 @media (prefers-reduced-motion: reduce) {
-    .live__dot, .pulse span { animation: none; }
+    .live__dot, .pulse span { animation: breathe 2.4s ease-in-out infinite; }
+    .pulse span { transform: none; }
     .seg span, .chip span, .btn { transition: none; }
 }

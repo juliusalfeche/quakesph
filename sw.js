@@ -1,7 +1,7 @@
 'use strict';
 
 // Change this number whenever you publish an update, so installed copies refresh.
-const CACHE_NAME = 'quakesph-v3';
+const CACHE_NAME = 'quakesph-v4';
 
 // Relative paths, so it works under /quakesph/ on GitHub Pages and anywhere else.
 const APP_FILES = [
