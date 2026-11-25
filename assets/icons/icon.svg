@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>QuakesPH</title><defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#212121"/><stop offset="1" stop-color="#121212"/></linearGradient></defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <g fill="none" stroke="#D32F2F" stroke-width="14">
+    <circle cx="256" cy="276" r="170" opacity="0.22"/>
+    <circle cx="256" cy="276" r="122" opacity="0.5"/>
+    <circle cx="256" cy="276" r="74"/>
+  </g>
+  <path d="M52 276H158L190 226L228 336L266 190L304 350L332 262L352 276H460" fill="none" stroke="#DDDDDD" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

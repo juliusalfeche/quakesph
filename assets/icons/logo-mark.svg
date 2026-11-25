@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="40 92 432 368" width="432" height="368">
+  <title>QuakesPH</title>
+  <g fill="none" stroke="#D32F2F" stroke-width="14">
+    <circle cx="256" cy="276" r="170" opacity="0.22"/>
+    <circle cx="256" cy="276" r="122" opacity="0.5"/>
+    <circle cx="256" cy="276" r="74"/>
+  </g>
+  <path d="M52 276H158L190 226L228 336L266 190L304 350L332 262L352 276H460" fill="none" stroke="#DDDDDD" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

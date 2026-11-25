@@ -3,38 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js; style-src 'self' https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css; img-src 'self' data: https://server.arcgisonline.com https://tile.openstreetmap.org; connect-src 'self' https://earthquake.usgs.gov https://www.seismicportal.eu; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#121212">
 
-    <title>QuakesPH | Philippine Earthquake Tracker – Live Updates & Interactive Map</title>
-    <meta name="description" content="QuakesPH is a progressive web application (PWA) that provides real-time earthquake tracking across the Philippines, powered by live data from the USGS Earthquake API.">
-    <meta name="keywords" content="QuakesPH, earthquake, map, Philippines, live, tracker, seismic, tremor, USGS">
+    <title>QuakesPH | Philippine Earthquake Tracker – Live Updates &amp; Interactive Map</title>
+    <meta name="description" content="QuakesPH is a free, live earthquake tracker for the Philippines. See the latest quakes on an interactive map with magnitude, depth, time and your distance from the epicenter. Data from USGS and EMSC.">
     <meta name="author" content="Julius Alfeche">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://juliusalfeche.github.io/quakesph/">
     <meta name="google-site-verification" content="v9ybPZJGSBNM8pbW8au8KaXB_fsDwRGwMhpNC595D9k">
 
-    <meta name="theme-color" content="#2c3e50">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="logo.png">
-
-    <link rel="preconnect" href="https://unpkg.com" crossorigin>
-    <link rel="dns-prefetch" href="https://earthquake.usgs.gov">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" type="image/svg+xml" href="assets/icons/icon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+    <link rel="preconnect" href="https://server.arcgisonline.com">
 
     <meta property="og:site_name" content="QuakesPH">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="QuakesPH | Philippines Earthquake Tracker – Live Updates & Interactive Map">
-    <meta property="og:description" content="QuakesPH is a progressive web application (PWA) that provides real-time earthquake tracking across the Philippines, powered by live data from the USGS Earthquake API.">
+    <meta property="og:title" content="QuakesPH | Philippine Earthquake Tracker">
+    <meta property="og:description" content="Live earthquakes in the Philippines on an interactive map. Free, fast and installable.">
     <meta property="og:url" content="https://juliusalfeche.github.io/quakesph/">
-    <meta property="og:image" content="https://juliusalfeche.github.io/quakesph/cover.png">
+    <meta property="og:image" content="https://juliusalfeche.github.io/quakesph/assets/images/cover.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="QuakesPH: live earthquake tracker for the Philippines">
     <meta property="og:locale" content="en_PH">
-
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@juliusalfeche">
-    <meta name="twitter:title" content="QuakesPH | Philippines Earthquake Tracker – Live Updates & Interactive Map">
-    <meta name="twitter:description" content="QuakesPH is a progressive web application (PWA) that provides real-time earthquake tracking across the Philippines, powered by live data from the USGS Earthquake API">
-    <meta name="twitter:image" content="https://juliusalfeche.github.io/quakesph/cover.png">
+    <meta name="twitter:title" content="QuakesPH | Philippine Earthquake Tracker">
+    <meta name="twitter:description" content="Live earthquakes in the Philippines on an interactive map. Free, fast and installable.">
+    <meta name="twitter:image" content="https://juliusalfeche.github.io/quakesph/assets/images/cover.png">
 
     <script type="application/ld+json">
         {
@@ -44,109 +44,144 @@
             "url": "https://juliusalfeche.github.io/quakesph/",
             "applicationCategory": "UtilityApplication",
             "operatingSystem": "Any",
-            "author": {
-                "@type": "Person",
-                "name": "Julius Alfeche",
-                "url": "https://juliusalfeche.com/"
-            },
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "PHP" },
+            "author": { "@type": "Person", "name": "Julius Alfeche", "url": "https://juliusalfeche.com/" },
             "publisher": {
                 "@type": "Organization",
                 "name": "QuakesPH",
                 "url": "https://juliusalfeche.github.io/quakesph/",
-                "logo": "https://juliusalfeche.github.io/quakesph/logo.png"
+                "logo": "https://juliusalfeche.github.io/quakesph/assets/icons/icon-512.png"
             },
-            "sameAs": [
-                "https://www.facebook.com/quakesph",
-                "https://github.com/juliusalfeche/quakesph"
-            ]
+            "sameAs": ["https://www.facebook.com/quakesph", "https://github.com/juliusalfeche/quakesph"]
         }
     </script>
+
+    <!-- Leaflet is pinned to one exact version and checked with an integrity hash, so it can never change under us. -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous" defer></script>
+    <script type="module" src="assets/js/main.js"></script>
 </head>
 <body>
-    <div class="container">
-        <header id="em-header">
-            <a href="#" onclick="location.reload(true)" class="header-link" aria-label="Reload QuakesPH">
-                <img src="logo.png" alt="QuakesPH Logo" class="header-logo" />
-                <span>QuakesPH</span>
-            </a>
-        </header>
+    <a class="skip" href="#list-title">Skip to the quake list</a>
 
-        <main role="main">
-            <div id="em-nearest-quake" aria-live="polite">
-                <p id="nearest-status"></p>
-            </div>
-
-            <div class="em-map-controls" role="region" aria-label="Map controls">
-                <label for="em-mag-filter" class="visually-hidden">Filter by Magnitude</label>
-                <select id="em-mag-filter" aria-controls="em-map em-table">
-                    <option value="0-10" selected>All Magnitudes</option>
-                    <option value="4-4.9">Magnitude 4</option>
-                    <option value="5-5.9">Magnitude 5</option>
-                    <option value="6-6.9">Magnitude 6</option>
-                    <option value="7-10">Magnitude 7+</option>
-                </select>
-
-                <label for="em-time-filter" class="visually-hidden">Filter by Time Period</label>
-                <select id="em-time-filter">
-                    <option value="hour">Last Hour</option>
-                    <option value="day" selected>Last Day</option>
-                    <option value="week">Last Week</option>
-                    <option value="month">Last Month</option>
-                </select>
-
-                <label for="em-basemap" class="visually-hidden">Select Map Basemap</label>
-                <select id="em-basemap">
-                    <option value="auto" selected>CARTO Maps</option>
-                    <option value="google_hybrid">Google Maps</option>
-                    <option value="osm">OpenStreetMap</option>
-                </select>
-            </div>
-
-            <div id="em-map-container">
-                <div id="em-map" aria-label="Earthquake map" role="application"></div>
-            </div>
-
-            <div id="em-legend" role="list" aria-label="Magnitude legend">
-                <div class="em-legend-item" role="listitem" tabindex="0" data-min="4" data-max="4.9"><span class="em-legend-color"></span><span>Light</span></div>
-                <div class="em-legend-item" role="listitem" tabindex="0" data-min="5" data-max="5.9"><span class="em-legend-color"></span><span>Moderate</span></div>
-                <div class="em-legend-item" role="listitem" tabindex="0" data-min="6" data-max="6.9"><span class="em-legend-color"></span><span>Strong</span></div>
-                <div class="em-legend-item" role="listitem" tabindex="0" data-min="7" data-max="10"><span class="em-legend-color"></span><span>Major</span></div>
-            </div>
-
-            <div id="em-list-container">
-                <div id="em-quake-count" aria-live="polite"></div>
-                <div id="em-refresh-status" aria-live="polite"></div>
-                <table id="em-table" aria-label="Latest earthquakes">
-                    <thead>
-                        <tr>
-                            <th>Time</th>
-                            <th>Magnitude</th>
-                            <th>Depth</th>
-                            <th>Location</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </main>
-    </div>
-
-    <footer id="em-footer">
-        <div class="footer-center">
-            <p>
-                <a href="https://www.facebook.com/quakesph" target="_blank" rel="noopener" aria-label="QuakesPH on Facebook">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <span class="separator"> </span>
-                <a href="https://github.com/juliusalfeche/quakesph" target="_blank" rel="noopener" aria-label="QuakesPH on GitHub">
-                    <i class="fab fa-github"></i>
-                </a>
-            </p>
-            <p>© <span id="current-year"></span> <b>QuakesPH</b></p>
+    <header class="top">
+        <div class="brand">
+            <img src="assets/icons/logo-mark.svg" width="52" height="44" alt="">
+            <h1>QuakesPH</h1>
         </div>
-    </footer>
+        <p class="tagline">Live earthquakes in the Philippines</p>
+        <p class="live"><span class="live__dot" aria-hidden="true"></span><span id="updated">Loading&hellip;</span></p>
+    </header>
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
-    <script type="module" src="main.js" defer></script>
+    <main class="page">
+        <noscript><p class="notice">QuakesPH needs JavaScript to load live earthquake data.</p></noscript>
+
+        <section class="stats" aria-label="Summary">
+            <div class="stat">
+                <span class="stat__label">Quakes</span>
+                <strong class="stat__value" id="stat-count">&ndash;</strong>
+                <span class="stat__sub" id="stat-count-sub">&nbsp;</span>
+            </div>
+            <div class="stat">
+                <span class="stat__label">Strongest</span>
+                <strong class="stat__value" id="stat-strongest">&ndash;</strong>
+                <span class="stat__sub" id="stat-strongest-sub">&nbsp;</span>
+            </div>
+            <div class="stat">
+                <span class="stat__label">Latest</span>
+                <strong class="stat__value" id="stat-latest">&ndash;</strong>
+                <span class="stat__sub" id="stat-latest-sub">&nbsp;</span>
+            </div>
+        </section>
+
+        <div id="controls">
+        <form id="filters" class="filters" aria-label="Filters">
+            <fieldset class="seg">
+                <legend>Period</legend>
+                <div class="seg__options">
+                    <label><input type="radio" name="period" value="hour"><span>Hour</span></label>
+                    <label><input type="radio" name="period" value="day"><span>Day</span></label>
+                    <label><input type="radio" name="period" value="week"><span>Week</span></label>
+                    <label><input type="radio" name="period" value="month"><span>Month</span></label>
+                </div>
+            </fieldset>
+
+            <fieldset class="seg">
+                <legend>Magnitude</legend>
+                <div class="seg__options">
+                    <label><input type="radio" name="mag" value="0"><span>All</span></label>
+                    <label><input type="radio" name="mag" value="4"><span>M4+</span></label>
+                    <label><input type="radio" name="mag" value="5"><span>M5+</span></label>
+                    <label><input type="radio" name="mag" value="6"><span>M6+</span></label>
+                    <label><input type="radio" name="mag" value="7"><span>M7+</span></label>
+                </div>
+            </fieldset>
+
+            <fieldset class="seg">
+                <legend>Map</legend>
+                <div class="seg__options">
+                    <label><input type="radio" name="basemap" value="dark"><span>Dark</span></label>
+                    <label><input type="radio" name="basemap" value="satellite"><span>Satellite</span></label>
+                    <label><input type="radio" name="basemap" value="streets"><span>Streets</span></label>
+                </div>
+            </fieldset>
+        </form>
+
+        <div class="toolbar">
+            <button type="button" class="btn btn--accent" id="locate">
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="7.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3"/></g></svg>
+                <span>Show my distance</span>
+            </button>
+            <button type="button" class="btn" id="reset-view">Reset view</button>
+            <label class="chip">
+                <input type="checkbox" id="plates" name="plates">
+                <span>Plate boundaries</span>
+            </label>
+        </div>
+        </div>
+        <p class="distance" id="distance" role="status">Tap &ldquo;Show my distance&rdquo; to see how far the latest quake was from you. Your location stays on your device.</p>
+
+        <div class="map-wrap">
+            <div id="map" role="region" aria-label="Map of recent earthquakes in the Philippines"></div>
+            <p class="map-notice" id="map-notice" role="status" hidden></p>
+            <p class="map-fallback" id="map-fallback" hidden>The map could not load, but the list below still works.</p>
+        </div>
+
+        <ul class="legend" aria-label="Magnitude key">
+            <li data-legend="minor"><span class="dot dot--minor" aria-hidden="true"></span>Minor <small>&lt;4</small> <b class="legend__count">0</b></li>
+            <li data-legend="light"><span class="dot dot--light" aria-hidden="true"></span>Light <small>4</small> <b class="legend__count">0</b></li>
+            <li data-legend="moderate"><span class="dot dot--moderate" aria-hidden="true"></span>Moderate <small>5</small> <b class="legend__count">0</b></li>
+            <li data-legend="strong"><span class="dot dot--strong" aria-hidden="true"></span>Strong <small>6</small> <b class="legend__count">0</b></li>
+            <li data-legend="major"><span class="dot dot--major" aria-hidden="true"></span>Major <small>7+</small> <b class="legend__count">0</b></li>
+        </ul>
+
+        <div class="messages">
+            <p class="status" id="status" role="status" hidden></p>
+            <button type="button" class="btn" id="retry" hidden>Try again</button>
+            <p class="notice" id="notice" role="status" hidden></p>
+        </div>
+
+        <section aria-labelledby="list-title">
+            <h2 id="list-title">Earthquakes</h2>
+            <ul class="quakes" id="quake-list" aria-busy="true"></ul>
+            <p class="empty" id="empty" hidden>No earthquakes match these filters. Try a longer period or a lower magnitude.</p>
+            <button type="button" class="btn btn--wide" id="more" hidden>Show more</button>
+        </section>
+    </main>
+
+    <footer class="foot">
+        <div class="foot__links">
+            <a href="https://www.facebook.com/quakesph" target="_blank" rel="noopener noreferrer" aria-label="QuakesPH on Facebook">
+                <svg viewBox="0 0 320 512" width="18" height="22" aria-hidden="true" focusable="false"><path fill="currentColor" d="M80 299.3V512H196V299.3h86.5l18-97.8H196V166.9c0-51.7 20.3-71.5 72.7-71.5c16.3 0 29.4 .4 37 1.2V7.9C291.4 4 256.4 0 236.2 0C129.3 0 80 50.5 80 159.4v42.1H14v97.8H80z"/></svg>
+            </a>
+            <a href="https://github.com/juliusalfeche/quakesph" target="_blank" rel="noopener noreferrer" aria-label="QuakesPH on GitHub">
+                <svg viewBox="0 0 16 16" width="22" height="22" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            </a>
+        </div>
+        <p>&copy; <span id="copyright-years">2025</span> <b>QuakesPH</b> &middot; Made by <a href="https://juliusalfeche.com/" target="_blank" rel="noopener noreferrer">Julius Alfeche</a></p>
+        <p class="foot__small">Quake data: USGS and EMSC. Plate boundaries: Bird (2003). Maps: Esri and OpenStreetMap contributors.</p>
+        <p class="foot__small">For information only. This is not an official warning. For official bulletins, see <a href="https://earthquake.phivolcs.dost.gov.ph/" target="_blank" rel="noopener noreferrer">PHIVOLCS</a>.</p>
+    </footer>
 </body>
 </html>

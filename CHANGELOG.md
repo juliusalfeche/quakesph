@@ -5,6 +5,44 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [3.0.0] - 2026-11-25
+### 🌟 Major Release — *“A full rebuild: fixed map, flat dark design, hardened code”*
+
+### 🗺️ Map
+- **Fixed the “API KEY REQUIRED” watermark.** CARTO now requires an API key for its free basemaps. QuakesPH now uses key-free **Esri Dark Gray**, **Esri Satellite** and **OpenStreetMap** tiles instead.
+- Removed the Google Maps tile option (it used an unofficial endpoint that breaks Google's terms).
+- Added the required map **attributions** (they were hidden before).
+- The map no longer jumps to the latest quake every minute while you are exploring it.
+- Plate boundary data trimmed from 226 KB to 24 KB; it is now a simple on/off toggle.
+
+### 🎨 Design
+- New flat, minimal dark design with the same palette as the DLBB forum (red `#d32f2f` on `#121212`).
+- New summary tiles (quake count, strongest, latest), segmented filters, and a clean list instead of a wide table.
+- New logo, app icons (including an Android maskable icon) and social cover image.
+- Times are shown in Philippine Time (PHT), with “x min ago” next to each quake.
+- Location is now requested only when you tap **Show my distance**, not on page load.
+
+### 🔒 Security
+- Fixed a **cross-site scripting (XSS) risk**: place names from outside servers were inserted as HTML. Everything is now inserted as plain text, and links are only allowed to USGS over https.
+- Added a strict **Content Security Policy**.
+- Leaflet is now **pinned to version 1.9.4 with an integrity hash** (it used to load “latest” from unpkg, which could break or change at any time).
+- Removed Font Awesome (an external dependency); icons are now inline SVG.
+- Removed the code that blocked right-click and F12 (it did not add security and hurt accessibility).
+
+### 🐛 Fixes
+- Quakes with a missing magnitude no longer break the whole list.
+- If one data source is down, the other still works and a notice explains it. If both are down, a clear message and a “Try again” button appear.
+- Slow requests now time out after 15 seconds; refreshing pauses while the tab is hidden.
+- Magnitude ranges no longer skip values such as 4.95.
+- The service worker no longer re-registers on every page load, and no longer depends on the `/quakesph/` folder name.
+- Keyboard and screen-reader support: list rows are real buttons, with focus outlines and a skip link.
+
+### 📁 Project
+- Files are now organised into `assets/` (css, js, data, icons, images).
+- The code is split into small modules, and a test suite was added (`npm test`).
+
+---
+
 ## [2.0.0] - 2025-11-24
 ### 🌟 Major Release — *“QuakesPH v2.0: Dual Source Data”*
 

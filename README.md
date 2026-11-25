@@ -1,84 +1,93 @@
-# 🌋 QuakesPH | Philippine Earthquake Tracker
+# 🌋 QuakesPH
 
-**QuakesPH** is a **progressive web application (PWA)** that provides **real-time earthquake tracking across the Philippines**, powered by live data from multiple global seismic sources.
+**Live earthquake tracker for the Philippines.** See the latest quakes on an interactive map, filter by time and magnitude, and check how far the latest one was from you.
 
-It features **personalized location tracking** (distance to the nearest quake!), an **interactive map**, **dynamic filtering**, **offline capabilities**, and **automatic dark/light mode** — all built for fast, mobile-first access to seismic data.
+👉 **Live site:** https://juliusalfeche.github.io/quakesph/
 
----
+![QuakesPH](assets/images/cover.png)
 
-## 🚀 Features
+## Features
 
-### ✨ Dual Source Data Integration
-To provide the most comprehensive picture of seismic activity, QuakesPH intelligently combines data from two major international sources, with logic to filter out duplicates:
-* **Primary Data:** **USGS Earthquake API** (United States Geological Survey)
-* **Supplemental Data:** **EMSC-CSEM / Seismic Portal** (European-Mediterranean Seismological Centre)
+- **Two data sources, one clean list.** USGS is the main source; EMSC fills in the smaller quakes (below M4). The same quake reported by both is shown once.
+- **Interactive map** with circles sized and colored by magnitude, and a pulsing ring on the latest quake.
+- **Filters:** last hour / day / week / month, and All / M4+ / M5+ / M6+ / M7+. Your choices are remembered on your device.
+- **Three map styles, no API key needed:** Dark (Esri Dark Gray), Satellite (Esri imagery) and Streets (OpenStreetMap).
+- **Plate boundaries** layer (on or off), to show where the Philippines sits on the Pacific Ring of Fire.
+- **Distance to the latest quake.** Tap *Show my distance*. Your location is used only in your browser. It is never saved or sent anywhere.
+- **Updates every minute** (pauses while the tab is hidden).
+- **Installable and works offline** as an app (PWA), on Android, iOS and desktop.
+- **Accessible:** keyboard friendly, screen reader labels, visible focus, respects "reduce motion".
 
-### 📍 Personalized Location Tracking
-- Uses **browser geolocation** to find your current position.
-- Calculates and displays the **distance in kilometers** to the latest recorded earthquake, highlighted by a **blinking text effect**.
-- Shows your location on the map with a **pulsing blue marker** (`@keyframes pulse`).
-- Renders an **animated dashed path** connecting you to the latest quake for clear visualization (`@keyframes dash-animation`).
+## Magnitude colors
 
-### 🌍 Real-Time Earthquake Tracking
-- Fetches live, de-duplicated data from the combined sources.
-- Automatically refreshes every **60 seconds**.
-- Displays key details: **magnitude, depth, location, and time**.
+| Class | Magnitude | Color |
+|---|---|---|
+| Minor | below 4 | blue |
+| Light | 4 – 4.9 | yellow |
+| Moderate | 5 – 5.9 | orange |
+| Strong | 6 – 6.9 | red |
+| Major | 7 and above | purple |
 
-### 🗺️ Interactive Earthquake Map
-- Built using **Leaflet.js** for map rendering and animations.
-- **Circle markers** show quake locations, color-coded and sized by magnitude.
-- **Visual magnitude legend** with descriptive terms: **Light** (M4), **Moderate** (M5), **Strong** (M6), and **Major** (M7+).
-- **Animated Map Updates:** The map automatically **flies to the latest quake** upon load or filter change, and the **latest marker blinks** to draw attention.
-- **Dynamic Layers:**
-    * **Tectonic Plate Boundaries** 
+## Project structure
 
-[Image of Philippine tectonic plates]
- are displayed when zoomed in, providing educational context on seismic risk.
-    * **Philippine Search Bounds** are visibly rendered as a dashed line at higher zoom levels.
-- Clickable rows in the table zoom into the corresponding map marker.
+```
+quakesph/
+├── index.html
+├── sw.js                 offline support (must stay in the root)
+├── manifest.json         app install info
+├── assets/
+│   ├── css/style.css     all styling and the color palette
+│   ├── js/
+│   │   ├── config.js     settings: refresh time, colors, map limits
+│   │   ├── utils.js      distance, dates, safe links
+│   │   ├── quakes.js     cleans and merges the data
+│   │   ├── api.js        talks to USGS and EMSC
+│   │   ├── map.js        everything Leaflet (map, markers, layers)
+│   │   ├── ui.js         draws the list, tiles and popups
+│   │   └── main.js       connects everything
+│   ├── data/plates-ph.json
+│   ├── icons/            logo and app icons
+│   └── images/cover.png  social preview image
+├── tests/                automatic tests for the data logic
+└── README.md, CHANGELOG.md, LICENSE
+```
 
-### 🧩 Dynamic Filters
-- **Magnitude:** All (includes M0+ via EMSC), M4+, M5+, M6+, M7+
-- **Time Period:** Last Hour, Day, Week, Month
-- **Basemap:** Select from **CARTO Maps** (Auto Dark/Light), **Google Maps** (Hybrid), or **OpenStreetMap**.
+## Security and privacy
 
-### 🌗 Automatic Dark/Light Mode
-- **System Preference Detection:** Automatically detects and respects the user's operating system dark/light preference.
-- **Enhanced Dark Theme:** Provides a high-contrast dark theme with features like:
-    * **Blurred/Transparent UI elements** (tables, controls) for a modern, focused look.
-    * **Dynamically color-coded markers** and map themes that adjust for dark backgrounds.
+- No cookies, no analytics, no accounts, no API keys.
+- A strict **Content Security Policy** limits what the page can load and connect to.
+- The only outside code is **Leaflet 1.9.4**, pinned to an exact version and verified with an integrity hash.
+- Text from outside servers is always inserted as plain text, and links are only allowed to USGS over https.
+- Map tiles come from Esri and OpenStreetMap, so those services see your IP address when tiles load (the same as any website with a map).
 
-### 📊 Earthquake Data Table
-- Scrollable, responsive table listing all filtered quakes.
-- Clickable rows to center the map view.
-- Displays total quake count for current filters.
-- Links provided directly to the source agency (USGS) for detailed information where available.
+## Updating the site
 
-### 📱 Progressive Web App (PWA)
-- Fully installable on Android, iOS, and desktop.
-- **Offline support** via Service Worker caching.
-- Includes robust logic for **managing PWA updates** to ensure the latest version is always used.
-- Launches in **standalone app mode** with app manifest.
+1. Change the files.
+2. In `sw.js`, raise the version (`quakesph-v3` → `quakesph-v4`) so installed copies refresh.
 
-### ⚡ Performance & Optimization
-- **Efficient Data Cancellation:** Uses **`AbortController`** to cancel outdated fetch requests, significantly improving performance when quickly switching filters.
-- **Optimized for Mobile:** Fully responsive UI, ensuring fast, seamless experience across all devices (mobile, tablet, desktop).
-- **Subtle Branding:** Includes a **subtle "shake" animation** on the logo and a branded background texture.
+To run it locally (the service worker needs a web server, not a double-click):
 
----
+```
+python3 -m http.server 8000
+```
 
-## 🔗 Connect
+Optional tests (needs Node.js 20 or newer, nothing to install):
 
-You can follow or contribute to **QuakesPH** on:
-* [**GitHub**](https://github.com/juliusalfeche/quakesph)
-* [**Facebook**](https://www.facebook.com/quakesph)
+```
+npm test
+```
 
----
+## Data and credits
 
-## ⚠️ Disclaimer
+- Earthquakes: [USGS](https://earthquake.usgs.gov/) and [EMSC-CSEM](https://www.seismicportal.eu/)
+- Plate boundaries: Peter Bird (2003), *An updated digital model of plate boundaries*
+- Maps: [Esri](https://www.esri.com/) and [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
+- Map library: [Leaflet](https://leafletjs.com/)
 
-The information provided by **QuakesPH** is for **educational and informational purposes only**. While I strive to provide accurate and up-to-date earthquake data, I **do not guarantee the completeness, reliability, or timeliness** of the information.
+## Disclaimer
 
-**QuakesPH primarily focuses on earthquakes of magnitude 4.0 and above** (as sourced from the USGS Earthquake API), but also includes smaller events (M0.0+) through the EMSC-CSEM source for completeness when filtered. It is **not a substitute for official warnings or advice** from local authorities, emergency services, or the **Philippine Institute of Volcanology and Seismology (PHIVOLCS)**. Users should **always follow official guidance and take necessary precautions** in the event of seismic activity.
+QuakesPH is for information only and is **not an official warning system**. Data can be late, incomplete or revised. For official bulletins, see [PHIVOLCS](https://earthquake.phivolcs.dost.gov.ph/).
 
-By using this service, you acknowledge that **QuakesPH is not responsible for any loss, injury, or damage** resulting from the use or reliance on the information provided.
+## License
+
+MIT. See [LICENSE](LICENSE).

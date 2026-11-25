@@ -1,0 +1,9 @@
+{
+    "name": "quakesph",
+    "private": true,
+    "type": "module",
+    "description": "QuakesPH - Philippine earthquake tracker. No dependencies; this file only lets `npm test` run the small test suite.",
+    "scripts": {
+        "test": "node --test"
+    }
+}
