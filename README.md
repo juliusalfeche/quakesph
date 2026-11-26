@@ -33,7 +33,7 @@
 ```
 quakesph/
 ├── index.html
-├── sw.js                 offline support (must stay in the root)
+├── sw.js                 offline support
 ├── manifest.json         app install info
 ├── assets/
 │   ├── css/style.css     all styling and the color palette
@@ -59,23 +59,6 @@ quakesph/
 - The only outside code is **Leaflet 1.9.4**, pinned to an exact version and verified with an integrity hash.
 - Text from outside servers is always inserted as plain text, and links are only allowed to USGS over https.
 - Map tiles come from Esri and OpenStreetMap, so those services see your IP address when tiles load (the same as any website with a map).
-
-## Updating the site
-
-1. Change the files.
-2. In `sw.js`, raise the version (`quakesph-v4` → `quakesph-v5`) so installed copies refresh.
-
-To run it locally (the service worker needs a web server, not a double-click):
-
-```
-python3 -m http.server 8000
-```
-
-Optional tests (needs Node.js 20 or newer, nothing to install):
-
-```
-npm test
-```
 
 ## Data and credits
 
